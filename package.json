@@ -1,0 +1,23 @@
+{
+  "name": "first_capstone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sabora920/GOT_FORUM_APP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sabora920/GOT_FORUM_APP/issues"
+  },
+  "homepage": "https://github.com/sabora920/GOT_FORUM_APP#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
