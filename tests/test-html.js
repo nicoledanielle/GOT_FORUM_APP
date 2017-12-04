@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const {app, runServer, closeServer} = require('../server');
 
-const should = chai.should();
+const should = require('chai').should();
 
 chai.use(chaiHttp);
 
@@ -17,16 +17,12 @@ describe('Index load', function() {
     return closeServer();
   });
 
-  it('should return a 200 status code and HTML', function(expect, done){
-    // let res;
+  it('should return a 200 status code and HTML', function(){
     return chai.request(app)
       .get('/')
-      .end(function(err, res) { 
-        expect(res).to.have.status(200); done();
-      // .then(function(res) {
-      //   res.should.have.status(200);
-      //   res.should.be.html;
-      // });
+      .then(function(res) {
+        res.should.have.status(200);
+        res.should.be.html;
       });
   });
 });
