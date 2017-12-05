@@ -1,21 +1,24 @@
 'use strict';
 
 const data = require('./seed-data');
+const bodyParser = require('body-parser');
+
 
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const {User, Post} = require('./models');
+const {User, Post, Comment} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
 
 app.use(express.static('public'));
+app.use(bodyParser.json());
 
 app.get('/posts', function(req, res){
   Post
     .find()
-    .then(posts => res.json(Post.apiRepr()))
+    .then(posts => {res.json(posts.map(post => post.apiRepr()))})
     .catch (err => {
-      console.err(err);
+      console.error(err);
       res.status(500).json({error: 'something went wrong'});
     });
   // res.json(data);
@@ -49,14 +52,14 @@ app.post('/posts', function(req, res){
       content: req.body.content,
       author: req.body.author
     })
-    .then(post => res.status(201).json(post.apiRepr()))
+    .then(forumPost =>{
+      console.log(forumPost);
+      res.status(201).json(forumPost.apiRepr())
+    })
     .catch(err => {
       console.error(err);
       res.status(500).json({error: 'something went wrong'});
     });
-  // console.log(req.body);
-  // //save req.body to dataBase
-  // res.json(req.body);
 });
 
 app.delete('/posts/:id', (req, res) => {
@@ -71,6 +74,57 @@ app.delete('/posts/:id', (req, res) => {
     });
 });
 
+app.put('/posts/:id', function(req, res){
+  if(!(req.params.id && req.body.id === req.body.id)){
+    res.status(400).json({
+      error: 'Request path ID and request body ID must match'
+    });
+  }
+  const updated = {};
+  const updatableFields = ['title', 'content'];
+  updatableFields.forEach(field => {
+    if(field in req.body){
+      updated[field] = req.body[field];
+    }
+  });
+  Post
+    .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
+    .then(updatedPost => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      res.status(500).json({message: 'Something went wrong'});
+    })
+})
+
+app.post('/posts/:id/comments', function(req, res){
+  const requiredFields = ['author','content'];
+  for(let i=0; i<requiredFields.length; i++){
+    const field = requiredFields[i];
+    if(!(field in req.body)){
+      const message = `Missing ${field} in requiest body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  Comment
+    .create({
+      author: req.body.author,
+      content: req.body.content
+    })
+    .then(comment => {
+      console.log(comment)
+      res.status(201).json(comment.apiRepr())
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({error: 'something went wrong'});
+    });
+})
+
+app.use('*', function(req, res) {
+  res.status(404).json({message: 'Not Found'});
+});
 
 let server;
 
@@ -78,7 +132,7 @@ function runServer() {
   const port = process.env.PORT || 8080;
   return new Promise((resolve, reject) => {
     server = app.listen(port, () => {
-      mongoose.connect(DATABASE_URL);
+      mongoose.connect(DATABASE_URL, {useMongoClient: true});
       console.log(`Your app is listening on port ${port}`);
       resolve(server);
     }).on('error', err => {
