@@ -1,9 +1,27 @@
 'use strict';
 
+const data = require('./seed-data');
+
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
-// app.listen(process.env.PORT || 8080);
+
+// console.log(data);
+
+app.get('/posts', function(req, res){
+  res.json(data);
+})
+
+app.get('/posts/:id', function(req, res){
+  console.log(req.params.id);
+  res.json(data[0]);
+})
+
+app.post('/posts', function(req, res){
+  console.log(req.body);
+  //save req.body to dataBase
+  res.json(req.body);
+})
 
 let server;
 
