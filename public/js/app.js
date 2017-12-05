@@ -35,12 +35,9 @@ const renderDetail = function (store) {
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
   el.find('.category').text(item.category);
-  el.find('.comments').text(item.comments.forEach(function(element) {
-    element.author;
-    element.content;
-    element.publishedAt;
-  }));
-  console.log(item.comments);
+  el.find('.comments').text(item.comments.map(function(val){
+    return `${val.author} ${val.content} ${val.publishedAt}`;
+  }).join(''));
   el.find('.date').text(item.publishedAt);
 };
 
