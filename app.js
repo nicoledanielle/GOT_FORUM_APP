@@ -29,5 +29,25 @@ let MOCK_FORUM_POSTS = {
         'comments': []
       }
     },
+    {
+      'id': '111113',
+      'title': 'A Song of Ice & Fire vs. HBO -- the list of differences',
+      'author': 'gotnerd',
+      'content': 'Valor dohaeris. Hen syndrorro, onos. Hen nuqir, perzys. Hen morghot, glaeson. Hen syndrorro, onos. Hen nuqir, perzys. Hen morghot, glaeson. Tubi daor. Valar morghulis. Valar morghulis. Nuhor lir gurenna. Toli rhuqo lotinti, kostilus. Tubi daor. Ao ynoma diniluks?',
+      'publishedAt': '8-13-2017',
+      'comments': {
+        'number': 2,
+        'comments': [
+          {'id': '234568',
+            'author': 'joesand',
+            'content': 'Hodor, Hodor, Hodor, Hodor. Hodor! Hodor, Hodor, Hodor. Hodor? Hodor... Hodor? Hodor... Hodor, Hodor, Hodor, Hodor. Hodor, Hodor, Hodor, Hodor. Hodor!',
+            'publishedAt': '11-1-2017'},
+          {'id': '234569',
+            'author': 'jennismith',
+            'content': 'Dunc the Lunk, thick as a castle wall. A storm of swords. Never Resting. I would like a trial by combat. Bastards are born of passion, aren't they? We don't despise them in Dorne. Winter is coming. And now his watch is ended. Winter is coming. Winter is coming. King in the North.',
+            'publishedAt': '10-11-2017'}
+        ]
+      }
+    }
   ]
 };
