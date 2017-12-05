@@ -11,7 +11,7 @@ const PostSchema = new mongoose.Schema({
   publishedAt: {type: Date, default: Date.now},
   //come back to update category
   category: {type: String},
-  comments: [cCmmentSchema]
+  comments: [CommentSchema]
 });
 
 const CommentSchema = new mongoose.Schema({
@@ -35,3 +35,6 @@ const UserSchema = new mongoose.Schema({
 });
 
 let User = mongoose.model('User', UserSchema);
+let Post = mongoose.model('Post', PostSchema);
+
+module.exports = {User, Post};
