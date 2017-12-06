@@ -47,6 +47,7 @@ PostSchema.methods.apiRepr = function(){
     author: this.author,
     title: this.title,
     content: this.content,
+    comments: this.comments,
     publishedAt: this.publishedAt
   }
 }
