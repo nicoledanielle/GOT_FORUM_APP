@@ -27,7 +27,7 @@ router.post('/login', localAuth, (req, res) => {
   res.json({authToken});
 });
 
-router.post('/register', (req, res) => {
+router.post('/api/users', (req, res) => {
   
   let {username, password, firstName = '', lastName = ''} = req.body;
   firstName = firstName.trim();
