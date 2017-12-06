@@ -7,9 +7,10 @@ const passport = require('passport');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const {User, Post} = require('./models'); 
+const {Post} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
-const {router: userRouter,  localStrategy, jwtStrategy } = require('./auth');
+const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
+const {router: userRouter, User} = require('./users');s
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -30,7 +31,7 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/api/users/', userRouter);
-// app.use('/api/auth/', authRouter);
+app.use('/api/auth/', authRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -153,6 +154,15 @@ app.post('/posts/:id/comments', function(req, res){
       console.error(err);
       res.status(500).json({error: 'something went wrong'});
     });
+});
+
+app.put('/posts/:id/comments/:id', function(req, res){
+  // if(!(req.params.id && req.body.id === req.body.id)){
+  //   res.status(400).json({
+  //     error: 'Request path ID and request body ID must match'
+  //   });
+  // if(!(req.params.comments.id && req.))
+  console.log(req.params);
 });
 
 app.use('/api/auth', userRouter);
