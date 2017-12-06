@@ -100,38 +100,30 @@ app.put('/posts/:id', function(req, res){
 
 app.post('/posts/:id/comments', function(req, res){
 
+  const requiredFields = ['author','content'];
+  for(let i=0; i<requiredFields.length; i++){
+    const field = requiredFields[i];
+    if(!(field in req.body)){
+      const message = `Missing ${field} in request body`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
   Post
-    .findOne({'_id':req.params.id}, function(err, post){
+    .findByIdAndUpdate(req.params.id, {'$push': 
+      {'comments': {
+        'author': req.body.author,
+        'content': req.body.content,
+      }}
+    }, {new: true})
+    .then(post =>{
       console.log(post);
-        post.comments.push({
-            author: "bob",
-            content: "this is some content"
-        });
-  })
-  // const requiredFields = ['author','content'];
-  // for(let i=0; i<requiredFields.length; i++){
-  //   const field = requiredFields[i];
-  //   if(!(field in req.body)){
-  //     const message = `Missing ${field} in request body`;
-  //     console.error(message);
-  //     return res.status(400).send(message);
-  //   }
-  // }
-  // Post
-  //   .findByIdAndUpdate(req.params.id, {'$push': 
-  //     {'comments.$.DataSource': {
-  //       'author': req.body.author,
-  //       'content': req.body.content,
-  //     }}
-  //   }, {new: true})
-  //   .then(newComment =>{
-  //     console.log(newComment);
-  //     res.status(204).end();
-  //   })
-  //   .catch(err => {
-  //     console.error(err);
-  //     res.status(500).json({error: 'something went wrong'});
-  //   });
+      res.json(post)
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({error: 'something went wrong'});
+    });
 });
 
 app.use('/api/auth', userRouter);
