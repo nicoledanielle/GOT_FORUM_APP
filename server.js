@@ -9,6 +9,7 @@ const app = express();
 const mongoose = require('mongoose');
 const {User, Post, Comment} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
+const {router: userRouter} = require('./auth');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -121,6 +122,8 @@ app.post('/posts/:id/comments', function(req, res){
       res.status(500).json({error: 'something went wrong'});
     });
 })
+
+app.use('/api/auth', userRouter)
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});

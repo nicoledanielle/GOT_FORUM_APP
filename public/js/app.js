@@ -3,6 +3,17 @@
 
 const ITEMS_URL = '/posts/';
 
+const signupUser = function (event) {
+  event.preventDefault();
+  const username = $('.username').val();
+  const password = $('.password').val();
+
+  fetch(`http://localhost:8080/`)
+
+  //ADD AJAX REQUEST NEXT
+};
+
+
 const renderPage = function (store) {
   if (store.demo) {
     $('.view').css('background-color', 'gray');
@@ -188,5 +199,7 @@ jQuery(function ($) {
 
   // start app by triggering a search
   $('#search').trigger('submit');
+
+  $('#sign-up').on('submit', STORE, signupUser);
 
 });

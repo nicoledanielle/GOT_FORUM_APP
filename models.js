@@ -25,13 +25,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  fullName: {
+  firstName: {
     type: String,
     required: true
   },
-  location: {
-    type: String
-  }
+  lastName: {
+    type: String,
+    required: true
+  },
 });
 
 PostSchema.methods.apiRepr = function(){
