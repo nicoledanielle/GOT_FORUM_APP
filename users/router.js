@@ -8,7 +8,6 @@ const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
-// Post to register a new user
 router.post('/api/users', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
@@ -86,8 +85,6 @@ router.post('/api/users', jsonParser, (req, res) => {
   }
 
   let {username, password, firstName = '', lastName = ''} = req.body;
-  // Username and password come in pre-trimmed, otherwise we throw an error
-  // before this
   firstName = firstName.trim();
   lastName = lastName.trim();
 
@@ -95,7 +92,6 @@ router.post('/api/users', jsonParser, (req, res) => {
     .count()
     .then(count => {
       if (count > 0) {
-        // There is an existing user with the same username
         return Promise.reject({
           code: 422,
           reason: 'ValidationError',
@@ -118,8 +114,6 @@ router.post('/api/users', jsonParser, (req, res) => {
       return res.status(201).json(user.apiRepr());
     })
     .catch(err => {
-      // Forward validation errors on to the client, otherwise give a 500
-      // error because something unexpected has happened
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }

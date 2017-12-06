@@ -4,6 +4,7 @@ const data = require('./seed-data');
 const bodyParser = require('body-parser');
 
 const passport = require('passport');
+const path = require('path');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -12,7 +13,7 @@ const {DATABASE_URL, PORT} = require('./config');
 const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
 const {router: userRouter, User} = require('./users');
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 //****auth */
