@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const {User, Post, Comment} = require('./models');
+const {User, Post} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
 const {router: userRouter} = require('./auth');
 
@@ -108,7 +108,7 @@ app.post('/posts/:id/comments', function(req, res){
       return res.status(400).send(message);
     }
   }
-  Comment
+  Post.comments
     .create({
       author: req.body.author,
       content: req.body.content
