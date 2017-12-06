@@ -7,10 +7,9 @@ const passport = require('passport');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const {User, Post} = require('./models');
+const {User, Post} = require('./models'); 
 const {DATABASE_URL, PORT} = require('./config');
-const {router: userRouter,  localStrategy } = require('./auth');
-const JwtStrategy = require('./auth').Strategy;
+const {router: userRouter,  localStrategy, jwtStrategy } = require('./auth');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
