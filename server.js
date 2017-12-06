@@ -155,6 +155,15 @@ app.post('/posts/:id/comments', function(req, res){
     });
 });
 
+app.put('/posts/:id/comments/:id', function(req, res){
+  // if(!(req.params.id && req.body.id === req.body.id)){
+  //   res.status(400).json({
+  //     error: 'Request path ID and request body ID must match'
+  //   });
+  // if(!(req.params.comments.id && req.))
+  console.log(req.params);
+});
+
 app.use('/api/auth', userRouter);
 
 app.use('*', function(req, res) {
