@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.get('/posts', function(req, res){
   Post
     .find()
-    .then(posts => {res.json(posts.map(post => post.apiRepr()))})
+    .then(posts => {res.json(posts.map(post => post.apiRepr()));})
     .catch (err => {
       console.error(err);
       res.status(500).json({error: 'something went wrong'});
@@ -41,7 +41,7 @@ app.post('/posts', function(req, res){
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`
+      const message = `Missing \`${field}\` in request body`;
       console.error(message);
       return res.status(400).send(message);
     }
@@ -55,7 +55,7 @@ app.post('/posts', function(req, res){
     })
     .then(forumPost =>{
       console.log(forumPost);
-      res.status(201).json(forumPost.apiRepr())
+      res.status(201).json(forumPost.apiRepr());
     })
     .catch(err => {
       console.error(err);
@@ -95,35 +95,37 @@ app.put('/posts/:id', function(req, res){
     })
     .catch(err => {
       res.status(500).json({message: 'Something went wrong'});
-    })
-})
+    });
+});
 
 app.post('/posts/:id/comments', function(req, res){
   const requiredFields = ['author','content'];
   for(let i=0; i<requiredFields.length; i++){
     const field = requiredFields[i];
     if(!(field in req.body)){
-      const message = `Missing ${field} in requiest body`
+      const message = `Missing ${field} in request body`;
       console.error(message);
       return res.status(400).send(message);
     }
   }
-  Post.comments
-    .create({
-      author: req.body.author,
-      content: req.body.content
-    })
-    .then(comment => {
-      console.log(comment)
-      res.status(201).json(comment.apiRepr())
+  Post
+    .findByIdAndUpdate(req.params.id, {'$push': 
+      {'comments.$.DataSource': {
+        'author': req.body.author,
+        'content': req.body.content,
+      }}
+    }, {new: true})
+    .then(newComment =>{
+      console.log(newComment);
+      res.status(204).end();
     })
     .catch(err => {
       console.error(err);
       res.status(500).json({error: 'something went wrong'});
     });
-})
+});
 
-app.use('/api/auth', userRouter)
+app.use('/api/auth', userRouter);
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});
