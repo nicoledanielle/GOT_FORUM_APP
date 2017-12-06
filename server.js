@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const {Post} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
 const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
-const {router: userRouter, User} = require('./users');s
+const {router: userRouter, User} = require('./users');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
