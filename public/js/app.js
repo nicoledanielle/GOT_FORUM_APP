@@ -2,6 +2,7 @@
 'use strict';
 
 const ITEMS_URL = '/posts';
+const COMMENTS_URL = 'comments';
 
 const renderPage = function (store) {
   if (store.demo) {
@@ -91,9 +92,10 @@ const handleAddComment = function(event){
   const el = $(event.target);
 
   const document = {
+    id: store.item,
     content: el.find('[name=content]').val()
   };
-  api.create(document)
+  api.comment(document)
     .then(response => {
       store.item = response;
       store.list = null;
@@ -101,7 +103,7 @@ const handleAddComment = function(event){
       store.view = 'detail';
       renderPage(store);
     }).catch(err => {
-      console.err(err);
+      console.error(err);
     })
 };
 

@@ -90,6 +90,19 @@ var api = {
       }
     }).then(normalizeResponseErrors)
       .then(res => res.text());
+  },
+  comment: function(document) {
+    const url = buildUrl(`${ITEMS_URL}/${document.id}/${COMMENTS_URL}`);
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: document ? JSON.stringify(document) : null
+    }).then(normalizeResponseErrors)
+      .then(res => res.json());
   }
 };
 
