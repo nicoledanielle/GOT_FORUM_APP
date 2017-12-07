@@ -33,11 +33,19 @@ const renderEdit = function (store) {
 const renderDetail = function (store) {
   const el = $('#detail');
   const item = store.item;
+  let date = new Date(item.publishedAt); 
+  (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+  let dateComments = new Date(item.publishedAt); 
+  (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
+  
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.date').text(item.publishedAt);
+  el.find('.date').text(date);
   el.find('.comments').html(item.comments.map(function(val){
-    return `<li>${val.content} ${val.publishedAt}
+    let dateComments = new Date(val.publishedAt); 
+    (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
+    
+    return `<li>${val.content} ${dateComments}
     </li>`;
   }).join(''));
 };
@@ -89,6 +97,7 @@ const handleCreate = function (event) {
 const handleAddComment = function(event){
   event.preventDefault();
   const store = event.data;
+
   const el = $(event.target);
 
   const document = {

@@ -92,7 +92,8 @@ var api = {
       .then(res => res.text());
   },
   comment: function(document) {
-    const url = buildUrl(`${ITEMS_URL}/${document.id}/${COMMENTS_URL}`);
+    console.log('document.id', document.id);
+    const url = buildUrl(`${ITEMS_URL}/${document.id.id}/${COMMENTS_URL}`);
 
     return fetch(url, {
       method: 'POST',
