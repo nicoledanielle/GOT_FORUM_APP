@@ -36,7 +36,6 @@ const renderEdit = function (store) {
 }; 
 
 const renderDetail = function (store) {
-  console.log('render detail running');
   const el = $('#detail');
   const item = store.item;
   el.find('.title').text(item.title);
