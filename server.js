@@ -183,19 +183,6 @@ app.put('/posts/:id1/comments/:id2', function(req, res){
 });
 
 app.delete('/posts/:id1/comments/:id2', function(req, res){
-  // Post
-  //   .remove({'comments._id':req.params.id2})
-  //   // .findById(req.params.id1)
-  //   .then(post => {
-  //     // let comment = post.comments.id(req.params.id2);
-  //     res.json('message received');
-  //     // console.log(comment);
-  //   })
-  //   // .remove()
-  //   // .catch(err => {
-  //   //   console.error(err);
-  //   //   res.status(500).json({error: 'something went terribly wrong'});
-  //   // });
   console.log(req.params.id1)
 
     Post.update(
