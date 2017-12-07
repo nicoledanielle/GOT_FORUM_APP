@@ -1,4 +1,4 @@
-/* global $, render, api, STORE */
+/* global $, render, api, userSTORE */
 'use strict';
 
 var handle = {
@@ -10,8 +10,8 @@ var handle = {
     el.trigger('reset');
     api.signup(username, password)
       .then(() => {
-        STORE.view = 'login';
-        render.page(STORE);
+        userSTORE.view = 'login';
+        render.page(userSTORE);
       }).catch(err => {
         if (err.reason === 'ValidationError') {
           console.error('ERROR:', err.reason, err.message);
@@ -27,8 +27,8 @@ var handle = {
     const password = el.find('[name=password]').val().trim();
     api.login(username, password)
       .then(response => {
-        STORE.token = response.authToken;
-        localStorage.setItem('authToken', STORE.token);
+        userSTORE.token = response.authToken;
+        localStorage.setItem('authToken', userSTORE.token);
         handle.viewProtected(event);
       }).catch(err => {
         if (err.reason === 'ValidationError') {
@@ -39,13 +39,12 @@ var handle = {
       });
   },
   refresh: function () {
-    // No preventDefault on this one!
-    api.refresh(STORE.token)
+    api.refresh(userSTORE.token)
       .then(response => {
-        STORE.token = response.authToken;
-        localStorage.setItem('authToken', STORE.token);
+        userSTORE.token = response.authToken;
+        localStorage.setItem('authToken', userSTORE.token);
       }).catch(err => {
-        STORE.token = null; // remove expired token
+        userSTORE.token = null; // remove expired token
         localStorage.removeItem('authToken');
         console.error('ERROR:', err);
       });
@@ -53,29 +52,29 @@ var handle = {
 
   viewProtected: function (event) {
     event.preventDefault();    
-    api.protected(STORE.token)
+    api.protected(userSTORE.token)
       .then(response => {
-        STORE.protected = response;
-        render.results(STORE);
-        STORE.view = 'protected';
-        render.page(STORE);
+        userSTORE.protected = response;
+        render.results(userSTORE);
+        userSTORE.view = 'protected';
+        render.page(userSTORE);
       }).catch(err => {
         if (err.status === 401) {
-          STORE.backTo = STORE.view;
-          STORE.view = 'signup';
-          render.page(STORE);
+          userSTORE.backTo = userSTORE.view;
+          userSTORE.view = 'signup';
+          render.page(userSTORE);
         }
         console.error('ERROR:', err);
       });
   },
   viewLogin: function (event) {
     event.preventDefault();
-    STORE.view = 'login';
-    render.page(STORE);
+    userSTORE.view = 'login';
+    render.page(userSTORE);
   },
   viewSignup: function (event) {
     event.preventDefault();
-    STORE.view = 'signup';
-    render.page(STORE);
+    userSTORE.view = 'signup';
+    render.page(userSTORE);
   }
 };

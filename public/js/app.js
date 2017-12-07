@@ -8,6 +8,25 @@ const app = express();
 
 app.use(express.static('public'));
 
+let userSTORE = {
+  view: null,
+  protected: null,
+  token: localStorage.getItem('authToken'),
+};
+
+jQuery(function ($) {
+  $('body').on('click', handle.refresh);
+  $('#signup').on('submit', handle.signup);
+  $('#login').on('submit', handle.login);
+
+  $(document).on('click', '.viewLogin', handle.viewLogin);
+  $(document).on('click', '.viewSignup', handle.viewSignup);
+  $(document).on('click', '.viewProtected', handle.viewProtected);
+
+  $('.viewProtected').trigger('click');
+
+});
+
 // const signupUser = function (event) {
 //   event.preventDefault();
 //   const username = $('.username').val();
