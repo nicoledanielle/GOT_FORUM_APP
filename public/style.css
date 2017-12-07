@@ -1,11 +1,16 @@
+body {
+  background-color: #F2EEE0;
+}
+
 h2 {
   font-family: 'Cinzel Decorative', cursive;
   font-weight: 700;
   text-align: center;
+  color: #333036;
 }
 
 nav a, a:visited {
-  color: black;
+  color: #333036;
   text-decoration: none;
 }
 
