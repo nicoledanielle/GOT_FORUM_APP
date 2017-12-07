@@ -37,7 +37,7 @@ var api = {
       .then(res => res.json());
   },
   details: function (id) {
-    const url = buildUrl(`${ITEMS_URL}${id}`);
+    const url = buildUrl(`${ITEMS_URL}`+':'+`${id}`);
 
     return fetch(url, {
       method: 'GET',

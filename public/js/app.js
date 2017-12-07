@@ -97,11 +97,12 @@ const renderEdit = function (store) {
 }; 
 
 const renderDetail = function (store) {
+  console.log('render detail running');
   const el = $('#detail');
   const item = store.item;
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.category').text(item.category);
+  // el.find('.category').text(item.category);
   el.find('.comments').text(item.comments.map(function(val){
     return `${val.author} ${val.content} ${val.publishedAt}`;
   }).join(''));
@@ -259,18 +260,18 @@ jQuery(function ($) {
 });
 
 //user signup
-jQuery(function ($) {
-  // attempt refresh token if user interacts with page
-  $('body').on('click', handle.refresh);
+// jQuery(function ($) {
+//   // attempt refresh token if user interacts with page
+//   $('body').on('click', handle.refresh);
 
-  // Setup all the event listeners, passing STATE and event to handlers
-  $('#signup').on('submit', handle.signup);
-  $('#login').on('submit', handle.login);
+//   // Setup all the event listeners, passing STATE and event to handlers
+//   $('#signup').on('submit', handle.signup);
+//   $('#login').on('submit', handle.login);
 
-  $(document).on('click', '.viewLogin', handle.viewLogin);
-  $(document).on('click', '.viewSignup', handle.viewSignup);
-  $(document).on('click', '.viewProtected', handle.viewProtected);
+//   $(document).on('click', '.viewLogin', handle.viewLogin);
+//   $(document).on('click', '.viewSignup', handle.viewSignup);
+//   $(document).on('click', '.viewProtected', handle.viewProtected);
 
-  $('.viewProtected').trigger('click');
+//   $('.viewProtected').trigger('click');
 
-});
+// });
