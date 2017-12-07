@@ -1,74 +1,13 @@
 /* global jQuery, handle, $, api */
 'use strict';
 
-const express = require('express');
-const passport = require('passport');
 const ITEMS_URL = '/posts/';
-const app = express();
 
-app.use(express.static('public'));
-
-let userSTORE = {
-  view: null,
-  protected: null,
-  token: localStorage.getItem('authToken'),
-};
-
-jQuery(function ($) {
-  $('body').on('click', handle.refresh);
-  $('#signup').on('submit', handle.signup);
-  $('#login').on('submit', handle.login);
-
-  $(document).on('click', '.viewLogin', handle.viewLogin);
-  $(document).on('click', '.viewSignup', handle.viewSignup);
-  $(document).on('click', '.viewProtected', handle.viewProtected);
-
-  $('.viewProtected').trigger('click');
-
-});
-
-// const signupUser = function (event) {
-//   event.preventDefault();
-//   const username = $('.username').val();
-//   const password = $('.password').val();
-
-//   fetch('http://localhost:8080/');
+// let userSTORE = {
+//   view: null,
+//   protected: null,
+//   token: localStorage.getItem('authToken'),
 // };
-
-// app.post('/login/ajax', passport.authenticate('local-login'));
-
-// HTTP login form send to this URL
-//app.post('/login', passport.authenticate('local-login', {
-  //successRedirect : '/',
-//   failureRedirect : '/login',
-//   failureFlash : true
-// }));
-
-// app.post('/login', function(req, res, next) {
-//   passport.authenticate('local-login', function(err, user, info) {
-//     switch (req.accepts('html', 'json')) {
-//     case 'html':
-//       if (err) { return next(err); }
-//       if (!user) { return res.redirect('/login'); }
-//       req.logIn(user, function(err) {
-//         if (err) { return next(err); }
-//         return res.redirect('/profile');
-//       });
-//       break;
-//     case 'json':
-//       if (err)  { return next(err); }
-//       if (!user) { return res.status(401).send({'ok': false}); }
-//       req.logIn(user, function(err) {
-//         if (err) { return res.status(401).send({'ok': false}); }
-//         return res.send({'ok': true});
-//       });
-//       break;
-//     default:
-//       res.status(406).send();
-//     }
-//   })(req, res, next);    
-// });//
-
 
 const renderPage = function (store) {
   if (store.demo) {
@@ -163,15 +102,18 @@ const handleUpdate = function (event) {
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
-  api.update(document, store.token)
+  console.log(document);
+  // api.update(document, store.token)
+  api.update(document)
     .then(response => {
+      console.log(response);
       store.item = response;
       store.list = null; //invalidate cached list results
       renderDetail(store);
       store.view = 'detail';
       renderPage(store);
     }).catch(err => {
-      console.error(err);
+      console.error(err.stack);
     });
 };
 
@@ -199,7 +141,8 @@ const handleRemove = function (event) {
   const store = event.data;
   const id = store.item.id;
 
-  api.remove(id, store.token)
+  // api.remove(id, store.token)
+  api.remove(id)
     .then(() => {
       store.list = null; //invalidate cached list results
       return handleSearch(event);

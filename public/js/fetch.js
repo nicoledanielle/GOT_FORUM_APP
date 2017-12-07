@@ -37,7 +37,7 @@ var api = {
       .then(res => res.json());
   },
   details: function (id) {
-    const url = buildUrl(`${ITEMS_URL}`+':'+`${id}`);
+    const url = buildUrl(`${ITEMS_URL}${id}`);
 
     return fetch(url, {
       method: 'GET',
@@ -63,7 +63,7 @@ var api = {
   update: function (document) {
     const url = buildUrl(`${ITEMS_URL}${document.id}`);
     
-    console.log('dev tools', document);
+    // console.log('dev tools', document);
 
     return fetch(url, {
       method: 'PUT',
@@ -73,6 +73,10 @@ var api = {
       },
       body: document ? JSON.stringify(document) : null
     }).then(normalizeResponseErrors)
+    .then(res => {
+      console.log(res.json());
+      return res;
+    })
       .then(res => res.json());
   },
   remove: function (id) {

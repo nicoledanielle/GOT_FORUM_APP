@@ -68,7 +68,8 @@ app.get('/posts/:id', function(req, res){
 });
 
 app.post('/posts', function(req, res){
-  const requiredFields = ['author', 'title', 'content'];
+  // const requiredFields = ['author', 'title', 'content'];
+  const requiredFields = ['title', 'content'];
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -82,7 +83,7 @@ app.post('/posts', function(req, res){
     .create({
       title: req.body.title,
       content: req.body.content,
-      author: req.body.author
+      // author: req.body.author
     })
     .then(forumPost =>{
       console.log(forumPost);
