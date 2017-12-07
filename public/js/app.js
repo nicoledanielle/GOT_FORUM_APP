@@ -85,6 +85,26 @@ const handleCreate = function (event) {
     });
 };
 
+const handleAddComment = function(event){
+  event.preventDefault();
+  const store = event.data;
+  const el = $(event.target);
+
+  const document = {
+    content: el.find('[name=content]').val()
+  };
+  api.create(document)
+    .then(response => {
+      store.item = response;
+      store.list = null;
+      renderDetail(store);
+      store.view = 'detail';
+      renderPage(store);
+    }).catch(err => {
+      console.err(err);
+    })
+};
+
 const handleUpdate = function (event) {
   event.preventDefault();
   console.log('event.data', event.data)
@@ -168,6 +188,13 @@ const handleViewEdit = function (event) {
   renderPage(store);
 };
 
+const handViewComment = function(event){
+  event.preventDefault();
+  const store = event.data;
+  store.view = 'comment-wizard';
+  renderPage(store);
+};
+
 //on document ready bind events
 jQuery(function ($) {
 
@@ -183,11 +210,12 @@ jQuery(function ($) {
   $('#search').on('submit', STORE, handleSearch);
   $('#edit').on('submit', STORE, handleUpdate);
 
-  // $('#comment-wizard').on('submit', STORE, handleAddComment);
+  $('#comment-wizard').on('submit', STORE, handleAddComment);
 
   $('#result').on('click', '.detail', STORE, handleDetails);
   $('#detail').on('click', '.remove', STORE, handleRemove);
   $('#detail').on('click', '.edit', STORE, handleViewEdit);
+  $('#detail').on('click', '.leave-comment', STORE, handViewComment);
 
   $(document).on('click', '.viewCreate', STORE, handleViewCreate);
   $(document).on('click', '.viewList', STORE, handleViewList);
@@ -196,3 +224,4 @@ jQuery(function ($) {
   $('#search').trigger('submit');
 
 });
+
