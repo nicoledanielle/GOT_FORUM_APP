@@ -4,6 +4,16 @@
 const ITEMS_URL = '/posts';
 const COMMENTS_URL = 'comments';
 
+const signupUser = function (event) {
+  event.preventDefault();
+  const username = $('.username').val();
+  const password = $('.password').val();
+
+  fetch('http://localhost:8080/', {
+    //updatethis
+  });
+};
+
 const renderPage = function (store) {
   if (store.demo) {
     $('.view').css('background-color', 'gray');

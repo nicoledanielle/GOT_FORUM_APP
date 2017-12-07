@@ -35,6 +35,7 @@ router.post('/refresh', jwtAuth, (req, res) => {
 
 module.exports = {router};
 
+
 // router.post('/register', (req, res) => {
   
 //   let {username, password, firstName = '', lastName = ''} = req.body;

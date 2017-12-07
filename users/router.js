@@ -9,7 +9,7 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.post('/register', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password', 'firstName', 'lastName'];
+  const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
@@ -21,7 +21,7 @@ router.post('/register', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
+  const stringFields = ['username', 'password'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
