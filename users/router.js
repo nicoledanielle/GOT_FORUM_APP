@@ -8,7 +8,7 @@ const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
-router.post('/api/users', jsonParser, (req, res) => {
+router.post('/register', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -55,8 +55,6 @@ router.post('/api/users', jsonParser, (req, res) => {
     },
     password: {
       min: 10,
-      // bcrypt truncates after 72 characters, so let's not give the illusion
-      // of security by storing extra (unused) info
       max: 72
     }
   };
@@ -87,6 +85,7 @@ router.post('/api/users', jsonParser, (req, res) => {
   let {username, password, firstName = '', lastName = ''} = req.body;
   firstName = firstName.trim();
   lastName = lastName.trim();
+  console.log(username, password, firstName, lastName);
 
   return User.find({username})
     .count()
@@ -122,7 +121,7 @@ router.post('/api/users', jsonParser, (req, res) => {
 });
 
 //delete the below (do not publish this as it will expose all users)
-router.get('api/users', (req, res) => {
+router.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.apiRepr())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));

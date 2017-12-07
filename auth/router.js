@@ -21,53 +21,55 @@ const createAuthToken = function(user) {
 
 const localAuth = passport.authenticate('local', {session: false});
 router.use(bodyParser.json());
-// The user provides a username and password to login
 router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.apiRepr());
   res.json({authToken});
 });
 
-router.post('/api/users', (req, res) => {
-  
-  let {username, password, firstName = '', lastName = ''} = req.body;
-  firstName = firstName.trim();
-  lastName = lastName.trim();
-  
-  return User.find({username})
-    .count()
-    .then(count => {
-      if (count > 0) {
-        // There is an existing user with the same username
-        return Promise.reject({
-          code: 422,
-          reason: 'ValidationError',
-          message: 'Username already taken',
-          location: 'username'
-        });
-      }
-      // If there is no existing user, hash the password
-      return User.hashPassword(password);
-    })
-    .then(hash => {
-      return User.create({
-        username,
-        password: hash,
-        firstName,
-        lastName
-      });
-    })
-    .then(user => {
-      return res.status(201).json(user.apiRepr());
-    })
-    .catch(err => {
-      // Forward validation errors on to the client, otherwise give a 500
-      // error because something unexpected has happened
-      if (err.reason === 'ValidationError') {
-        return res.status(err.code).json(err);
-      }
-      res.status(500).json({code: 500, message: 'Internal server error'});
-    });
-});
-  
+const jwtAuth = passport.authenticate('jwt', {session: false});
+
+router.post('/refresh', jwtAuth, (req, res) => {
+  const authToken = createAuthToken(req.user);
+  res.json({authToken});
+});  
 
 module.exports = {router};
+
+// router.post('/register', (req, res) => {
+  
+//   let {username, password, firstName = '', lastName = ''} = req.body;
+//   firstName = firstName.trim();
+//   lastName = lastName.trim();
+  
+//   return User.find({username})
+//     .count()
+//     .then(count => {
+//       if (count > 0) {
+//         return Promise.reject({
+//           code: 422,
+//           reason: 'ValidationError',
+//           message: 'Username already taken',
+//           location: 'username'
+//         });
+//       }
+//       return User.hashPassword(password);
+//     })
+//     .then(hash => {
+//       return User.create({
+//         username,
+//         password: hash,
+//         firstName,
+//         lastName
+//       });
+//     })
+//     .then(user => {
+//       return res.status(201).json(user.apiRepr());
+//     })
+//     .catch(err => {
+//       if (err.reason === 'ValidationError') {
+//         return res.status(err.code).json(err);
+//       }
+//       res.status(500).json({code: 500, message: 'Internal server error'});
+//     });
+// });
+
