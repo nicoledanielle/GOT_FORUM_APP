@@ -1,13 +1,7 @@
 /* global jQuery, handle, $, api */
 'use strict';
 
-const ITEMS_URL = '/posts/';
-
-// let userSTORE = {
-//   view: null,
-//   protected: null,
-//   token: localStorage.getItem('authToken'),
-// };
+const ITEMS_URL = '/posts';
 
 const renderPage = function (store) {
   if (store.demo) {
@@ -40,7 +34,6 @@ const renderDetail = function (store) {
   const item = store.item;
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  // el.find('.category').text(item.category);
   el.find('.comments').text(item.comments.map(function(val){
     return `${val.author} ${val.content} ${val.publishedAt}`;
   }).join(''));
@@ -101,7 +94,6 @@ const handleUpdate = function (event) {
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
-  console.log(document);
   // api.update(document, store.token)
   api.update(document)
     .then(response => {
@@ -200,20 +192,3 @@ jQuery(function ($) {
   $('#search').trigger('submit');
 
 });
-
-//user signup
-// jQuery(function ($) {
-//   // attempt refresh token if user interacts with page
-//   $('body').on('click', handle.refresh);
-
-//   // Setup all the event listeners, passing STATE and event to handlers
-//   $('#signup').on('submit', handle.signup);
-//   $('#login').on('submit', handle.login);
-
-//   $(document).on('click', '.viewLogin', handle.viewLogin);
-//   $(document).on('click', '.viewSignup', handle.viewSignup);
-//   $(document).on('click', '.viewProtected', handle.viewProtected);
-
-//   $('.viewProtected').trigger('click');
-
-// });
