@@ -74,10 +74,10 @@ var api = {
       body: document ? JSON.stringify(document) : null
     })
     .then(normalizeResponseErrors)
-    .then(res => {
-      console.log(res.json());
-      return res;
-    })
+    // .then(res => {
+    //   console.log(res.json());
+    //   return res;
+    // })
       .then(res => res.json());
   },
   remove: function (id) {

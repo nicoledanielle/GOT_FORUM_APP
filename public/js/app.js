@@ -34,10 +34,11 @@ const renderDetail = function (store) {
   const item = store.item;
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.comments').text(item.comments.map(function(val){
-    return `${val.author} ${val.content} ${val.publishedAt}`;
-  }).join(''));
   el.find('.date').text(item.publishedAt);
+  el.find('.comments').html(item.comments.map(function(val){
+    return `<li>${val.content} ${val.publishedAt}
+    </li>`;
+  }).join(''));
 };
 
 const handleSearch = function (event) {
@@ -86,6 +87,7 @@ const handleCreate = function (event) {
 
 const handleUpdate = function (event) {
   event.preventDefault();
+  console.log('event.data', event.data)
   const store = event.data;
   const el = $(event.target);
 
@@ -180,6 +182,8 @@ jQuery(function ($) {
   $('#create').on('submit', STORE, handleCreate);
   $('#search').on('submit', STORE, handleSearch);
   $('#edit').on('submit', STORE, handleUpdate);
+
+  // $('#comment-wizard').on('submit', STORE, handleAddComment);
 
   $('#result').on('click', '.detail', STORE, handleDetails);
   $('#detail').on('click', '.remove', STORE, handleRemove);

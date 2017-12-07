@@ -81,15 +81,16 @@
 				<span class="content"></span>
 			</div>
 			<div>
-				<label for="comments">Comments</label>
-				<span class="comments"></span>
-			</div>
-			<div>
 				<label for="date">Date</label>
 				<span class="date"></span>
 			</div>			
+			<div>
+				<label for="comments">Comments</label>
+				<span class="comments"></span>
+			</div>
 			<a href="" class="edit">Edit</a>
 			<a href="" class="remove">Remove</a>
+			<a href="" class="leave-comment">Leave a Comment</a>
 		</fieldset>
 		<a href="" class="viewList">&lt; Back to list results </a>
 	</section>
@@ -101,6 +102,18 @@
 				<label for="name">Title</label>
 				<input type="text" name="title">
 			</div>
+			<div>
+				<label for="name">Content</label>
+				<textarea rows="4" cols="50" name="content"></textarea>
+			</div>
+
+			<button type="submit">Submit</button>
+		</fieldset>
+	</form>
+
+	<form id="comment-wizard" class="view">
+		<fieldset>
+			<legend>Comment</legend>
 			<div>
 				<label for="name">Content</label>
 				<textarea rows="4" cols="50" name="content"></textarea>

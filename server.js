@@ -123,7 +123,7 @@ app.put('/posts/:id', function(req, res){
   Post
     .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
     .then(updatedPost => {
-      res.status(204).end();
+      res.status(201).json(updatedPost);
     })
     .catch(err => {
       res.status(500).json({message: 'Something went wrong'});
@@ -132,7 +132,7 @@ app.put('/posts/:id', function(req, res){
 
 app.post('/posts/:id/comments', function(req, res){
 
-  const requiredFields = ['author','content'];
+  const requiredFields = ['content'];
   for(let i=0; i<requiredFields.length; i++){
     const field = requiredFields[i];
     if(!(field in req.body)){
@@ -144,7 +144,7 @@ app.post('/posts/:id/comments', function(req, res){
   Post
     .findByIdAndUpdate(req.params.id, {'$push': 
       {'comments': {
-        'author': req.body.author,
+        // 'author': req.body.author,
         'content': req.body.content,
       }}
     }, {new: true})
