@@ -72,7 +72,8 @@ var api = {
         'Accept': 'application/json'
       },
       body: document ? JSON.stringify(document) : null
-    }).then(normalizeResponseErrors)
+    })
+    .then(normalizeResponseErrors)
     .then(res => {
       console.log(res.json());
       return res;
