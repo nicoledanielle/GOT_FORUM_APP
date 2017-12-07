@@ -35,17 +35,15 @@ const renderDetail = function (store) {
   const item = store.item;
   let date = new Date(item.publishedAt); 
   (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-  let dateComments = new Date(item.publishedAt); 
-  (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
   
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.date').text(date);
+  el.find('.date').text(date.toString().split(" ").slice(0, 4).join(" "));
   el.find('.comments').html(item.comments.map(function(val){
     let dateComments = new Date(val.publishedAt); 
     (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
     
-    return `<li>${val.content} ${dateComments}
+    return `<li>${val.content} ${dateComments.toString().split(" ").slice(0, 4).join(" ")}
     </li>`;
   }).join(''));
 };
