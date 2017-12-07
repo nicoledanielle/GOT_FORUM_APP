@@ -157,13 +157,55 @@ app.post('/posts/:id/comments', function(req, res){
     });
 });
 
-app.put('/posts/:id/comments/:id', function(req, res){
-  // if(!(req.params.id && req.body.id === req.body.id)){
-  //   res.status(400).json({
-  //     error: 'Request path ID and request body ID must match'
-  //   });
-  // if(!(req.params.comments.id && req.))
-  console.log(req.params);
+app.put('/posts/:id1/comments/:id2', function(req, res){
+  if(!(req.params.id1 && req.body.id1 === req.body.id1 || req.params.id2 && req.body.id2 === req.body.id2)){
+    res.status(400).json({
+      error: 'Request path ID and request body ID must match'
+    });
+  }
+  const updated = {};
+  const updatable = ['content'];
+  updatable.forEach(updatableField => {
+    if (updatableField in req.body){
+      updated[updatableField]=req.body[updatableField];
+    }
+  });
+  Post
+    .update({_id: req.params.id1, 'comments._id': req.params.id2}, {$set: {'comments.$': updated}}, {new: true})
+    .then( post => {
+      //console.log(post);
+      res.status(201).end()
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).json({message: 'Something went wrong'});
+    });
+});
+
+app.delete('/posts/:id1/comments/:id2', function(req, res){
+  // Post
+  //   .remove({'comments._id':req.params.id2})
+  //   // .findById(req.params.id1)
+  //   .then(post => {
+  //     // let comment = post.comments.id(req.params.id2);
+  //     res.json('message received');
+  //     // console.log(comment);
+  //   })
+  //   // .remove()
+  //   // .catch(err => {
+  //   //   console.error(err);
+  //   //   res.status(500).json({error: 'something went terribly wrong'});
+  //   // });
+  console.log(req.params.id1)
+
+    Post.update(
+      { _id: req.params.id1 },
+      { $pull: { 'comments':{_id: req.params.id2}} }
+    )
+      .then( result => {
+        console.log(result);
+        res.status(204).end();
+      });
 });
 
 app.use('/api/auth', userRouter);
