@@ -2,10 +2,20 @@ body {
   background-color: #F2EEE0;
 }
 
-h2 {
+h2, h3 {
   font-family: 'Cinzel Decorative', cursive;
-  font-weight: 700;
   text-align: center;
+}
+
+h2 {
+  size: 1em;
+  font-weight: 900;
+  color: #C72230
+}
+
+h3 {
+  size: 1em;
+  font-weight: 400;
   color: #333036;
 }
 
@@ -26,7 +36,7 @@ label {
 button, input[type=submit] {
   height: 30px;
   width: 100px;
-  background-color: lightblue;
+  background-color: #C72230;
 }
 
 button {
@@ -34,7 +44,30 @@ button {
   width: 100px;
   margin-left: 20px;
   margin-top: 20px;
-  background-color: lightblue;
+  background-color: #C72230;
+}
+
+.list-results .comment-count {
+  text-align: right !important;
+}
+
+.list-results {
+  list-style-type: none;
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #333036;
+}
+
+.time-stamp, .comment-count {
+  margin: 20px;
+  padding: 10px;
+  font-size: .75em;
+}
+
+#nav {
+  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 #nav li {

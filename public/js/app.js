@@ -1,4 +1,4 @@
-/* global jQuery, handle, $, api */
+/* global jQuery, handle, $, api,  */
 'use strict';
 
 const ITEMS_URL = '/posts';
@@ -16,9 +16,12 @@ const renderPage = function (store) {
 
 const renderResults = function (store) {
   const listItems = store.list.map((item) => {
-    return `<li id="${item.id}">
-                <a href="${item.url}" class="detail">${item.title}</a>
-              </li>`;
+    let date = new Date(item.publishedAt); 
+    (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+    return `<li class="list-results" id="${item.id}">
+    <span class="time-stamp">${date.toString().split(" ").slice(0, 5).join(" ")}
+    </span><a href="${item.url}" class="detail">${item.title}</a><span class="comment-count">${item.comments.length} Comments
+    </span></li>`;
   });
   $('#result').empty().append('<ul>').find('ul').append(listItems);
 };

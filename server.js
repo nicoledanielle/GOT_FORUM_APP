@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 
 app.get('/posts', function(req, res){
   Post
-    .find()
+    .find().sort({publishedAt: -1})
     .then(posts => {res.json(posts.map(post => post.apiRepr()));})
     .catch (err => {
       console.error(err);
