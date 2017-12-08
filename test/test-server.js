@@ -19,7 +19,7 @@ function tearDownDb(){
     console.warn('Deleting test Database');
     mongoose.connection.dropDatabase()
       .then(result => resolve(result))
-      .catch(err => reject(err))
+      .catch(err => reject(err));
   });
 }
 
@@ -97,43 +97,43 @@ describe('GOT Forum posts API resource', function(){
 
           postsResult = res.body[0];
           return Post.findById(postsResult.id);
-          })
-          .then(post => {
-            postsResult.title.should.equal(post.title);
-            postsResult.content.should.equal(post.content);
-          });
+        })
+        .then(post => {
+          postsResult.title.should.equal(post.title);
+          postsResult.content.should.equal(post.content);
+        });
     });
   });
 
   describe('POST endpoints', function(){
     it('should add a new blog post', function() {
       
-            const newPost = {
-                title: faker.lorem.sentence(),
-                content: faker.lorem.text()
-            };
+      const newPost = {
+        title: faker.lorem.sentence(),
+        content: faker.lorem.text()
+      };
       
-            return chai.request(app)
-              .post('/posts')
-              .send(newPost)
-              .then(res => {
-                res.should.have.status(201);
-                res.should.be.json;
-                res.body.should.be.a('object');
-                res.body.should.include.keys(
-                  'id', 'title', 'content', 'publishedAt');
-                res.body.title.should.equal(newPost.title);
-                // cause Mongo should have created id on insertion
-                res.body.id.should.not.be.null;
-                res.body.content.should.equal(newPost.content);
-                return Post.findById(res.body.id);
-              })
-              .then(function(post) {
-                post.title.should.equal(newPost.title);
-                post.content.should.equal(newPost.content);
-              });
-          });
+      return chai.request(app)
+        .post('/posts')
+        .send(newPost)
+        .then(res => {
+          res.should.have.status(201);
+          res.should.be.json;
+          res.body.should.be.a('object');
+          res.body.should.include.keys(
+            'id', 'title', 'content', 'publishedAt');
+          res.body.title.should.equal(newPost.title);
+          // cause Mongo should have created id on insertion
+          res.body.id.should.not.be.null;
+          res.body.content.should.equal(newPost.content);
+          return Post.findById(res.body.id);
+        })
+        .then(function(post) {
+          post.title.should.equal(newPost.title);
+          post.content.should.equal(newPost.content);
         });
+    });
+  });
   describe('PUT endpoints', function(){
     it('should update fields you send over', function() {
       const updateData = {
@@ -159,28 +159,28 @@ describe('GOT Forum posts API resource', function(){
           post.content.should.equal(updateData.content);
         });
     });   
-  })
+  });
 
   describe('DELETE endpoints', function(){
     it('should delete a post by id', function() {
       
-            let post;
+      let post;
       
-            return Post
-              .findOne()
-              .then(_post => {
-                post = _post;
-                return chai.request(app).delete(`/posts/${post.id}`);
-              })
-              .then(res => {
-                res.should.have.status(204);
-                return Post.findById(post.id);
-              })
-              .then(_post => {
-                should.not.exist(_post);
-              });
-          }); 
-  })
+      return Post
+        .findOne()
+        .then(_post => {
+          post = _post;
+          return chai.request(app).delete(`/posts/${post.id}`);
+        })
+        .then(res => {
+          res.should.have.status(204);
+          return Post.findById(post.id);
+        })
+        .then(_post => {
+          should.not.exist(_post);
+        });
+    }); 
+  });
 });
 
 
