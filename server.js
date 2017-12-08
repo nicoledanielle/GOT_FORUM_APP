@@ -68,8 +68,7 @@ app.get('/posts/:id', function(req, res){
 });
 
 app.post('/posts', function(req, res){
-  // const requiredFields = ['author', 'title', 'content'];
-  const requiredFields = ['title', 'content'];
+  const requiredFields = ['author', 'title', 'content'];
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -83,7 +82,7 @@ app.post('/posts', function(req, res){
     .create({
       title: req.body.title,
       content: req.body.content,
-      // author: req.body.author
+      author: req.body.author
     })
     .then(forumPost =>{
       console.log(forumPost);
@@ -132,7 +131,7 @@ app.put('/posts/:id', function(req, res){
 
 app.post('/posts/:id/comments', function(req, res){
 
-  const requiredFields = ['content'];
+  const requiredFields = ['author','content'];
   for(let i=0; i<requiredFields.length; i++){
     const field = requiredFields[i];
     if(!(field in req.body)){
@@ -144,7 +143,7 @@ app.post('/posts/:id/comments', function(req, res){
   Post
     .findByIdAndUpdate(req.params.id, {'$push': 
       {'comments': {
-        // 'author': req.body.author,
+        'author': req.body.author,
         'content': req.body.content,
       }}
     }, {new: true})
@@ -186,14 +185,14 @@ app.put('/posts/:id1/comments/:id2', function(req, res){
 app.delete('/posts/:id1/comments/:id2', function(req, res){
   console.log(req.params.id1)
 
-    Post.update(
-      { _id: req.params.id1 },
-      { $pull: { 'comments':{_id: req.params.id2}} }
-    )
-      .then( result => {
-        console.log(result);
-        res.status(204).end();
-      });
+  Post.update(
+    { _id: req.params.id1 },
+    { $pull: { 'comments':{_id: req.params.id2}} }
+  )
+    .then( result => {
+      console.log(result);
+      res.status(204).end();
+    });
 });
 
 // app.use('/api/auth', userRouter);

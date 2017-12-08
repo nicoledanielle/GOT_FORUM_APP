@@ -74,6 +74,10 @@
 		<fieldset>
 			<legend>Post</legend>
 			<div>
+				<label for="author">Posted By</label>
+				<span class="author"></span>
+			</div>
+			<div>
 				<label for="title">Title</label>
 				<span class="title"></span>
 			</div>
@@ -82,7 +86,7 @@
 				<span class="content"></span>
 			</div>
 			<div>
-				<label for="date">Date</label>
+				<label for="date">Posted At</label>
 				<span class="date"></span>
 			</div>			
 			<div>
@@ -98,7 +102,11 @@
 
 	<form id="create" class="view">
 		<fieldset>
-			<legend>Create</legend>
+			<legend>Create a Post</legend>
+			<div>
+				<label for="name">Nickname</label>
+				<input type="text" name="author">
+			</div>
 			<div>
 				<label for="name">Title</label>
 				<input type="text" name="title">
@@ -115,6 +123,10 @@
 	<form id="comment-wizard" class="view">
 		<fieldset>
 			<legend>Comment</legend>
+			<div>
+				<label for="name">Nickname</label>
+				<input type="text" name="author">
+			</div>
 			<div>
 				<label for="name">Content</label>
 				<textarea rows="4" cols="50" name="content"></textarea>
