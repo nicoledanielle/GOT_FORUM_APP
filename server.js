@@ -196,7 +196,7 @@ app.delete('/posts/:id1/comments/:id2', function(req, res){
       });
 });
 
-app.use('/api/auth', userRouter);
+// app.use('/api/auth', userRouter);
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});
