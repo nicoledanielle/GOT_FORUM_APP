@@ -28,6 +28,7 @@ function seedPostData(){
   const seedData = [];
   for(let i=1; i<=10; i++){
     seedData.push({
+      author: faker.lorem.text(),
       title: faker.lorem.sentence(),
       content: faker.lorem.text()
     });
@@ -92,7 +93,7 @@ describe('GOT Forum posts API resource', function(){
           
           res.body.forEach(function(post) {
             post.should.be.a('object');
-            post.should.include.keys('id', 'title', 'content', 'publishedAt');
+            post.should.include.keys('id', 'author', 'title', 'content', 'publishedAt');
           });
 
           postsResult = res.body[0];
@@ -109,6 +110,7 @@ describe('GOT Forum posts API resource', function(){
     it('should add a new blog post', function() {
       
       const newPost = {
+        author: faker.lorem.text(),
         title: faker.lorem.sentence(),
         content: faker.lorem.text()
       };
@@ -121,7 +123,7 @@ describe('GOT Forum posts API resource', function(){
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.should.include.keys(
-            'id', 'title', 'content', 'publishedAt');
+            'id', 'author', 'title', 'content', 'publishedAt');
           res.body.title.should.equal(newPost.title);
           // cause Mongo should have created id on insertion
           res.body.id.should.not.be.null;
@@ -129,6 +131,7 @@ describe('GOT Forum posts API resource', function(){
           return Post.findById(res.body.id);
         })
         .then(function(post) {
+          post.author.should.equal(newPost.author);
           post.title.should.equal(newPost.title);
           post.content.should.equal(newPost.content);
         });
