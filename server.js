@@ -10,38 +10,38 @@ const app = express();
 const mongoose = require('mongoose');
 const {Post} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
-const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
-const {router: userRouter, User} = require('./users');
+// const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
+// const {router: userRouter, User} = require('./users');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 //****auth */
 // CORS
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-  if (req.method === 'OPTIONS') {
-    return res.send(204);
-  }
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+//   if (req.method === 'OPTIONS') {
+//     return res.send(204);
+//   }
+//   next();
+// });
 
-passport.use(localStrategy);
-passport.use(jwtStrategy);
+// passport.use(localStrategy);
+// passport.use(jwtStrategy);
 
-app.use('/api/users/', userRouter);
-app.use('/api/auth/', authRouter);
+// app.use('/api/users/', userRouter);
+// app.use('/api/auth/', authRouter);
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
+// const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: 'rosebud'
-  });
-});
+// app.get('/api/protected', (req, res) => {
+//   return res.json({
+//     data: 'rosebud'
+//   });
+// });
 //******auth */
 
 app.post('/login/ajax', passport.authenticate('local-login'));
@@ -80,7 +80,7 @@ app.post('/login', function(req, res, next) {
 
 app.get('/posts', function(req, res){
   Post
-    .find()
+    .find().sort({publishedAt: -1})
     .then(posts => {res.json(posts.map(post => post.apiRepr()));})
     .catch (err => {
       console.error(err);
@@ -101,8 +101,7 @@ app.get('/posts/:id', function(req, res){
 });
 
 app.post('/posts', function(req, res){
-  // const requiredFields = ['author', 'title', 'content'];
-  const requiredFields = ['title', 'content'];
+  const requiredFields = ['author', 'title', 'content'];
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -116,7 +115,7 @@ app.post('/posts', function(req, res){
     .create({
       title: req.body.title,
       content: req.body.content,
-      // author: req.body.author
+      author: req.body.author
     })
     .then(forumPost =>{
       console.log(forumPost);
@@ -165,7 +164,7 @@ app.put('/posts/:id', function(req, res){
 
 app.post('/posts/:id/comments', function(req, res){
 
-  const requiredFields = ['content'];
+  const requiredFields = ['author','content'];
   for(let i=0; i<requiredFields.length; i++){
     const field = requiredFields[i];
     if(!(field in req.body)){
@@ -177,7 +176,7 @@ app.post('/posts/:id/comments', function(req, res){
   Post
     .findByIdAndUpdate(req.params.id, {'$push': 
       {'comments': {
-        // 'author': req.body.author,
+        'author': req.body.author,
         'content': req.body.content,
       }}
     }, {new: true})
@@ -219,17 +218,17 @@ app.put('/posts/:id1/comments/:id2', function(req, res){
 app.delete('/posts/:id1/comments/:id2', function(req, res){
   console.log(req.params.id1)
 
-    Post.update(
-      { _id: req.params.id1 },
-      { $pull: { 'comments':{_id: req.params.id2}} }
-    )
-      .then( result => {
-        console.log(result);
-        res.status(204).end();
-      });
+  Post.update(
+    { _id: req.params.id1 },
+    { $pull: { 'comments':{_id: req.params.id2}} }
+  )
+    .then( result => {
+      console.log(result);
+      res.status(204).end();
+    });
 });
 
-app.use('/api/auth', userRouter);
+// app.use('/api/auth', userRouter);
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});

@@ -1,4 +1,4 @@
-/* global jQuery, handle, $, api */
+/* global jQuery, handle, $, api,  */
 'use strict';
 
 const ITEMS_URL = '/posts';
@@ -26,9 +26,12 @@ const renderPage = function (store) {
 
 const renderResults = function (store) {
   const listItems = store.list.map((item) => {
-    return `<li id="${item.id}">
-                <a href="${item.url}" class="detail">${item.title}</a>
-              </li>`;
+    let date = new Date(item.publishedAt); 
+    (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+    return `<li class="list-results" id="${item.id}">
+    <span class="time-stamp">${date.toString().split(" ").slice(0, 5).join(" ")}
+    </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author}</span><span class="comment-count">${item.comments.length} Comments
+    </span></li>`;
   });
   $('#result').empty().append('<ul>').find('ul').append(listItems);
 };
@@ -45,17 +48,16 @@ const renderDetail = function (store) {
   const item = store.item;
   let date = new Date(item.publishedAt); 
   (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-  let dateComments = new Date(item.publishedAt); 
-  (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
   
+  el.find('.author').text(item.author);
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.date').text(date);
+  el.find('.date').text(date.toString().split(" ").slice(0, 5).join(" "));
   el.find('.comments').html(item.comments.map(function(val){
     let dateComments = new Date(val.publishedAt); 
     (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
     
-    return `<li>${val.content} ${dateComments}
+    return `<li>${val.author} said: "${val.content}" on ${dateComments.toString().split(" ").slice(0, 5).join(" ")}
     </li>`;
   }).join(''));
 };
@@ -89,6 +91,7 @@ const handleCreate = function (event) {
   const el = $(event.target);
 
   const document = {
+    author: el.find('[name=author]').val(),
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
@@ -112,6 +115,7 @@ const handleAddComment = function(event){
 
   const document = {
     id: store.item,
+    author: el.find('[name=author]').val(),
     content: el.find('[name=content]').val()
   };
   api.comment(document)
