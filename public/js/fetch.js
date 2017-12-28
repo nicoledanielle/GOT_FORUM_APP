@@ -25,6 +25,34 @@ function normalizeResponseErrors(res) {
 }
 
 var api = {
+  register: function (username, password) {
+    // const url = buildUrl(ITEMS_URL, query);
+    const url = '/api/auth/register';
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username, password})
+    }).then(normalizeResponseErrors)
+      .then(res => res.json());
+  },
+
+  login: function (username, password) {
+    // const url = buildUrl(ITEMS_URL, query);
+    const url = '/api/auth/login';
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username, password})
+    }).then(normalizeResponseErrors)
+      .then(res => res.json());
+  },
+
   search: function (query) {
     const url = buildUrl(ITEMS_URL, query);
 
