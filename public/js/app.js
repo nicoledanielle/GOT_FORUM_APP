@@ -2,7 +2,7 @@
 'use strict';
 
 const GLOBAL_STORE = {
-  author: null
+  authToken: undefined
 };
 
 const handleRegister = function (event) {
@@ -24,11 +24,11 @@ const handleLogin = function (event) {
   event.preventDefault();
   const username = $('.username').val();
   const password = $('.password').val();
-
+  //send the response to the endpoint (auth token)
   api.login(username, password)
     .then(response => {
+      GLOBAL_STORE.authToken = response.authToken;
       console.log(response);
-      
       // store.view = 'list';
       // renderPage(store);
     }).catch(err => {
@@ -109,12 +109,11 @@ const handleSearch = function (event) {
 
 const handleCreate = function (event) {
   event.preventDefault();
-  api.userSearch();
-  console.log('logged in user', GLOBAL_STORE.author);
+  console.log('logged in user', GLOBAL_STORE.authToken);
   const store = event.data;
   const el = $(event.target);
   const document = {
-    author: GLOBAL_STORE.author,
+    authToken: GLOBAL_STORE.authToken,
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };

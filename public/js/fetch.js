@@ -3,15 +3,6 @@
 const ITEMS_URL = 'http://localhost:8080';
 const COMMENTS_ROUTE = 'comments';
 
-
-// function buildUrl(path, query) {
-//   var url = new URL(path, window.location.origin);
-//   if (query) {
-//     Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
-//   }
-//   return url;
-// }
-
 function normalizeResponseErrors(res) {
   if (!res.ok) {
     if (
@@ -30,7 +21,6 @@ function normalizeResponseErrors(res) {
 
 var api = {
   register: function (username, password) {
-    // const url = buildUrl(ITEMS_URL, query);
     const url = '/api/auth/register';
 
     return fetch(url, {
@@ -44,7 +34,6 @@ var api = {
   },
 
   login: function (username, password) {
-    // const url = buildUrl(ITEMS_URL, query);
     const url = '/api/auth/login';
 
     return fetch(url, {
@@ -57,18 +46,18 @@ var api = {
       .then(res => res.json());
   },
 
-  userSearch: function(){
-    const url = `${ITEMS_URL}/api/users/me`;
+  // userSearch: function(authToken){
+  //   const url = `${ITEMS_URL}/api/users/me`;
 
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    }).then(normalizeResponseErrors)
-      .then(res => res.json())
-      .then(author => GLOBAL_STORE.author = author);
-  },
+  //   return fetch(url, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Accept': 'application/json'
+  //     },
+  //     body: JSON.stringify({authToken})
+  //   }).then(normalizeResponseErrors)
+  //     .then(res => res.json());
+  // },
 
   search: function (query) {
     const url = `${ITEMS_URL}/posts`;
@@ -118,7 +107,7 @@ var api = {
       },
       body: document ? JSON.stringify(document) : null
     })
-    .then(normalizeResponseErrors)
+      .then(normalizeResponseErrors)
     // .then(res => {
     //   console.log(res.json());
     //   return res;

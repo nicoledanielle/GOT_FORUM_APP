@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config(); 
 const data = require('./seed-data');
 const bodyParser = require('body-parser');
 
@@ -12,6 +13,7 @@ const {Post} = require('./models');
 const {DATABASE_URL, PORT} = require('./config');
 const {router: authRouter,  localStrategy, jwtStrategy } = require('./auth');
 const {router: userRouter, User} = require('./users');
+const jwt = require('jsonwebtoken');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -37,11 +39,11 @@ app.use('/api/auth/', authRouter);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
-app.get('/api/protected', (req, res) => {
-  return res.json({
-    data: 'rosebud'
-  });
-});
+// app.get('/api/protected', (req, res) => {
+//   return res.json({
+//     data: 'rosebud'
+//   });
+// });
 //******auth */
 
 app.post('/login/ajax', passport.authenticate('local-login'));
@@ -101,7 +103,9 @@ app.get('/posts/:id', function(req, res){
 });
 
 app.post('/posts', function(req, res){
-  const requiredFields = [authToken, 'title', 'content'];
+  const requiredFields = ['authToken', 'title', 'content'];
+  const decodedUser = jwt.verify(req.body.authToken, process.env.JWT_SECRET);
+  console.log(decodedUser.user.username);
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -111,19 +115,22 @@ app.post('/posts', function(req, res){
     }
   }
 
-  Post
-    .create({
-      title: req.body.title,
-      content: req.body.content,
-      author: req.body.author
-    })
-    .then(forumPost =>{
-      console.log(forumPost);
-      res.status(201).json(forumPost.apiRepr());
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'something went wrong'});
+  User.findOne({username:decodedUser.user.username})
+    .then(resuser => {
+      Post
+        .create({
+          title: req.body.title,
+          content: req.body.content,
+          author: resuser._id,
+        })
+        .then(forumPost =>{
+          console.log(forumPost);
+          res.status(201).json(forumPost.apiRepr());
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json({error: 'something went wrong'});
+        });
     });
 });
 
@@ -207,16 +214,16 @@ app.put('/posts/:id1/comments/:id2', function(req, res){
     .update({_id: req.params.id1, 'comments._id': req.params.id2}, {$set: {'comments.$': updated}}, {new: true})
     .then( post => {
       //console.log(post);
-      res.status(201).end()
+      res.status(201).end();
     })
     .catch(err => {
-      console.error(err)
+      console.error(err);
       res.status(500).json({message: 'Something went wrong'});
     });
 });
 
 app.delete('/posts/:id1/comments/:id2', function(req, res){
-  console.log(req.params.id1)
+  console.log(req.params.id1);
 
   Post.update(
     { _id: req.params.id1 },
@@ -227,8 +234,6 @@ app.delete('/posts/:id1/comments/:id2', function(req, res){
       res.status(204).end();
     });
 });
-
-// app.use('/api/auth', userRouter);
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});
