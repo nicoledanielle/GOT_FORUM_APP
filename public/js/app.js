@@ -11,10 +11,7 @@ const handleRegister = function (event) {
 
   api.register(username, password)
     .then(response => {
-      console.log(response);
-      
-      // store.view = 'list';
-      // renderPage(store);
+      console.log('register response:', response);
     }).catch(err => {
       console.error(err);
     });
