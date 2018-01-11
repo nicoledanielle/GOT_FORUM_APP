@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const {User} = require('./models');
 
@@ -117,11 +118,10 @@ router.post('/register', jsonParser, (req, res) => {
     });
 });
 
-// //delete the below (do not publish this as it will expose all users)
-// router.get('/', (req, res) => {
-//   return User.find()
-//     .then(users => res.json(users.map(user => user.apiRepr())))
-//     .catch(err => res.status(500).json({message: 'Internal server error'}));
-// });
+router.get('/me',
+  passport.authenticate('basic', {session: false}),
+  (req, res) => res.json({user: req.user.apiRepr()})
+);
+
 
 module.exports = {router};

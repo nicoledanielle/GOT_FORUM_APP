@@ -1,8 +1,9 @@
 /* global jQuery, handle, $, api,  */
 'use strict';
 
-const ITEMS_URL = '/posts';
-const COMMENTS_URL = 'comments';
+const GLOBAL_STORE = {
+  author: null
+};
 
 const handleRegister = function (event) {
   event.preventDefault();
@@ -11,10 +12,9 @@ const handleRegister = function (event) {
 
   api.register(username, password)
     .then(response => {
-      console.log('register response:', response);
-      
-      // store.view = 'list';
-      // renderPage(store);
+      const store = event.data;
+      store.view = 'list';
+      renderPage(store);
     }).catch(err => {
       console.error(err);
     });
@@ -109,11 +109,12 @@ const handleSearch = function (event) {
 
 const handleCreate = function (event) {
   event.preventDefault();
+  api.userSearch();
+  console.log('logged in user', GLOBAL_STORE.author);
   const store = event.data;
   const el = $(event.target);
-
   const document = {
-    author: el.find('[name=author]').val(),
+    author: GLOBAL_STORE.author,
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };

@@ -1,12 +1,16 @@
 'use strict';
 
-function buildUrl(path, query) {
-  var url = new URL(path, window.location.origin);
-  if (query) {
-    Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
-  }
-  return url;
-}
+const ITEMS_URL = 'http://localhost:8080';
+const COMMENTS_ROUTE = 'comments';
+
+
+// function buildUrl(path, query) {
+//   var url = new URL(path, window.location.origin);
+//   if (query) {
+//     Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
+//   }
+//   return url;
+// }
 
 function normalizeResponseErrors(res) {
   if (!res.ok) {
@@ -53,8 +57,21 @@ var api = {
       .then(res => res.json());
   },
 
+  userSearch: function(){
+    const url = `${ITEMS_URL}/api/users/me`;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(normalizeResponseErrors)
+      .then(res => res.json())
+      .then(author => GLOBAL_STORE.author = author);
+  },
+
   search: function (query) {
-    const url = buildUrl(ITEMS_URL, query);
+    const url = `${ITEMS_URL}/posts`;
 
     return fetch(url, {
       method: 'GET',
@@ -65,7 +82,7 @@ var api = {
       .then(res => res.json());
   },
   details: function (id) {
-    const url = buildUrl(`${ITEMS_URL}/${id}`);
+    const url = `${ITEMS_URL}/posts/${id}`;
 
     return fetch(url, {
       method: 'GET',
@@ -76,8 +93,8 @@ var api = {
       .then(res => res.json());
   },
   create: function (document) {
-    const url = buildUrl(`${ITEMS_URL}`);
-
+    const url = `${ITEMS_URL}/posts`;
+    console.log(document);
     return fetch(url, {
       method: 'POST',
       headers: {
@@ -89,7 +106,7 @@ var api = {
       .then(res => res.json());
   },  
   update: function (document) {
-    const url = buildUrl(`${ITEMS_URL}/${document.id}`);
+    const url = `${ITEMS_URL}/posts/${document.id}`;
     
     // console.log('dev tools', document);
 
@@ -109,7 +126,7 @@ var api = {
       .then(res => res.json());
   },
   remove: function (id) {
-    const url = buildUrl(`${ITEMS_URL}/${id}`);
+    const url = `${ITEMS_URL}/posts/${id}`;
 
     return fetch(url, {
       method: 'DELETE',
@@ -121,7 +138,7 @@ var api = {
   },
   comment: function(document) {
     console.log('document.id', document.id);
-    const url = buildUrl(`${ITEMS_URL}/${document.id.id}/${COMMENTS_URL}`);
+    const url = `${ITEMS_URL}/posts/${document.id.id}/${COMMENTS_ROUTE}`;
 
     return fetch(url, {
       method: 'POST',

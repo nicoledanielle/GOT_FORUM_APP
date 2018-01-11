@@ -101,7 +101,7 @@ app.get('/posts/:id', function(req, res){
 });
 
 app.post('/posts', function(req, res){
-  const requiredFields = ['author', 'title', 'content'];
+  const requiredFields = [authToken, 'title', 'content'];
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
