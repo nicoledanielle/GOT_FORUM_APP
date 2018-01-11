@@ -45,6 +45,15 @@ button {
   margin-left: 20px;
   margin-top: 20px;
   background-color: #C72230;
+  border: 1px solid #333036;
+  color: #F2EEE0;
+  font-weight: 400 
+}
+
+button:hover {
+  color: #333036;
+  background-color: #F2EEE0;
+  border: 1px solid #C72230;
 }
 
 .list-results .comment-count {

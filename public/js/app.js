@@ -4,6 +4,35 @@
 const ITEMS_URL = '/posts';
 const COMMENTS_URL = 'comments';
 
+const handleRegister = function (event) {
+  event.preventDefault();
+  const username = $('.username').val();
+  const password = $('.password').val();
+
+  api.register(username, password)
+    .then(response => {
+      console.log('register response:', response);
+    }).catch(err => {
+      console.error(err);
+    });
+};
+
+const handleLogin = function (event) {
+  event.preventDefault();
+  const username = $('.username').val();
+  const password = $('.password').val();
+
+  api.login(username, password)
+    .then(response => {
+      console.log(response);
+      
+      // store.view = 'list';
+      // renderPage(store);
+    }).catch(err => {
+      console.error(err);
+    });
+};
+
 const renderPage = function (store) {
   if (store.demo) {
     $('.view').css('background-color', 'gray');
@@ -19,7 +48,7 @@ const renderResults = function (store) {
     let date = new Date(item.publishedAt); 
     (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     return `<li class="list-results" id="${item.id}">
-    <span class="time-stamp">${date.toString().split(" ").slice(0, 5).join(" ")}
+    <span class="time-stamp">${date.toString().split(' ').slice(0, 5).join(' ')}
     </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author}</span><span class="comment-count">${item.comments.length} Comments
     </span></li>`;
   });
@@ -42,12 +71,12 @@ const renderDetail = function (store) {
   el.find('.author').text(item.author);
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
-  el.find('.date').text(date.toString().split(" ").slice(0, 5).join(" "));
+  el.find('.date').text(date.toString().split(' ').slice(0, 5).join(' '));
   el.find('.comments').html(item.comments.map(function(val){
     let dateComments = new Date(val.publishedAt); 
     (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
     
-    return `<li>${val.author} said: "${val.content}" on ${dateComments.toString().split(" ").slice(0, 5).join(" ")}
+    return `<li>${val.author} said: "${val.content}" on ${dateComments.toString().split(' ').slice(0, 5).join(' ')}
     </li>`;
   }).join(''));
 };
@@ -117,12 +146,12 @@ const handleAddComment = function(event){
       renderPage(store);
     }).catch(err => {
       console.error(err);
-    })
+    });
 };
 
 const handleUpdate = function (event) {
   event.preventDefault();
-  console.log('event.data', event.data)
+  console.log('event.data', event.data);
   const store = event.data;
   const el = $(event.target);
 
@@ -178,6 +207,18 @@ const handleRemove = function (event) {
       console.error(err);
     });
 };
+const handleViewRegister = function (event) {
+  event.preventDefault();
+  const store = event.data;
+  store.view = 'signup';
+  renderPage(store);
+};
+const handleViewLogin = function (event) {
+  event.preventDefault();
+  const store = event.data;
+  store.view = 'login';
+  renderPage(store);
+};
 const handleViewCreate = function (event) {
   event.preventDefault();
   const store = event.data;
@@ -225,6 +266,9 @@ jQuery(function ($) {
   $('#search').on('submit', STORE, handleSearch);
   $('#edit').on('submit', STORE, handleUpdate);
 
+  $('#signup').on('submit', STORE, handleRegister);
+  $('#login').on('submit', STORE, handleLogin);
+
   $('#comment-wizard').on('submit', STORE, handleAddComment);
 
   $('#result').on('click', '.detail', STORE, handleDetails);
@@ -232,6 +276,8 @@ jQuery(function ($) {
   $('#detail').on('click', '.edit', STORE, handleViewEdit);
   $('#detail').on('click', '.leave-comment', STORE, handViewComment);
 
+  $(document).on('click', '.viewLogin', STORE, handleViewLogin);
+  $(document).on('click', '.viewSignup', STORE, handleViewRegister);
   $(document).on('click', '.viewCreate', STORE, handleViewCreate);
   $(document).on('click', '.viewList', STORE, handleViewList);
 

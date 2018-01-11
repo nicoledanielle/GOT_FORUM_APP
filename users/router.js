@@ -9,7 +9,7 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.post('/register', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password', 'firstName', 'lastName'];
+  const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
@@ -21,7 +21,7 @@ router.post('/register', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
+  const stringFields = ['username', 'password'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -51,7 +51,8 @@ router.post('/register', jsonParser, (req, res) => {
 
   const sizedFields = {
     username: {
-      min: 1
+      min: 1,
+      max: 25
     },
     password: {
       min: 10,
@@ -82,10 +83,8 @@ router.post('/register', jsonParser, (req, res) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
-  firstName = firstName.trim();
-  lastName = lastName.trim();
-  console.log(username, password, firstName, lastName);
+  let {username, password} = req.body;
+  console.log(username, password);
 
   return User.find({username})
     .count()
@@ -120,11 +119,11 @@ router.post('/register', jsonParser, (req, res) => {
     });
 });
 
-//delete the below (do not publish this as it will expose all users)
-router.get('/', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.apiRepr())))
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
-});
+// //delete the below (do not publish this as it will expose all users)
+// router.get('/', (req, res) => {
+//   return User.find()
+//     .then(users => res.json(users.map(user => user.apiRepr())))
+//     .catch(err => res.status(500).json({message: 'Internal server error'}));
+// });
 
 module.exports = {router};
