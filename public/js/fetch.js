@@ -93,10 +93,6 @@ var api = {
       body: document ? JSON.stringify(document) : null
     })
       .then(normalizeResponseErrors)
-    // .then(res => {
-    //   console.log(res.json());
-    //   return res;
-    // })
       .then(res => res.json());
   },
   remove: function (id) {
@@ -125,5 +121,18 @@ var api = {
       .then(res => res.json());
   }
 };
+
+// userSearch: function(authToken){
+  //   const url = `${ITEMS_URL}/api/users/me`;
+  
+  //   return fetch(url, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Accept': 'application/json'
+  //     },
+  //     body: JSON.stringify({authToken})
+  //   }).then(normalizeResponseErrors)
+  //     .then(res => res.json());
+  // },
 
 

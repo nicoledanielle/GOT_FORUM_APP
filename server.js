@@ -39,11 +39,11 @@ app.use('/api/auth/', authRouter);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
-// app.get('/api/protected', (req, res) => {
-//   return res.json({
-//     data: 'rosebud'
-//   });
-// });
+app.get('/api/protected', (req, res) => {
+  return res.json({
+    data: 'rosebud'
+  });
+});
 //******auth */
 
 app.post('/login/ajax', passport.authenticate('local-login'));

@@ -2,9 +2,26 @@
 'use strict';
 
 const GLOBAL_STORE = {
-  authToken: undefined,
-  username: null
+  authToken: undefined
 };
+
+const handleViewProtected = function (event) {
+  event.preventDefault();    
+  api.protected(STORE.token)
+    .then(response => {
+      STORE.protected = response;
+      render.results(STORE);
+      STORE.view = 'protected';
+      render.page(STORE);
+    }).catch(err => {
+      if (err.status === 401) {
+        STORE.backTo = STORE.view;
+        STORE.view = 'signup';
+        render.page(STORE);
+      }
+      console.error('ERROR:', err);
+    });
+}
 
 const handleRegister = function (event) {
   event.preventDefault();
@@ -25,14 +42,12 @@ const handleLogin = function (event) {
   event.preventDefault();
   const username = $('.username').val();
   const password = $('.password').val();
-  //send the response to the endpoint (auth token)
+  const store = event.data;
   api.login(username, password)
     .then(response => {
       GLOBAL_STORE.authToken = response.authToken;
-      GLOBAL_STORE.username = response.username;
-      console.log('login response', response);
-      // store.view = 'list';
-      // renderPage(store);
+      store.view = 'list';
+      renderResults(store);
     }).catch(err => {
       console.error(err);
     });
@@ -49,6 +64,7 @@ const renderPage = function (store) {
 };
 
 const renderResults = function (store) {
+  // console.log(store);
   const listItems = store.list.map((item) => {
     let date = new Date(item.publishedAt); 
     (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
@@ -155,6 +171,7 @@ const handleAddComment = function(event){
     });
 };
 
+//bug please fix
 const handleUpdate = function (event) {
   event.preventDefault();
   const store = event.data;
@@ -162,17 +179,15 @@ const handleUpdate = function (event) {
 
   const document = {
     id: store.item.id,
-    author: el.find('.author').text(store.item.author.username),
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
   console.log(document);
-  // api.update(document, store.token)
   api.update(document)
     .then(response => {
       console.log(response);
       store.item = response;
-      store.list = null; //invalidate cached list results
+      store.list = null;
       renderDetail(store);
       store.view = 'detail';
       renderPage(store);
