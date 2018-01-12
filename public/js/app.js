@@ -1,56 +1,244 @@
 /* global jQuery, handle, $, api,  */
 'use strict';
 
-const GLOBAL_STORE = {
-  authToken: undefined
+const STORE = {
+  authToken: undefined,
+  demo: false,  
+  view: 'list',
+  protect: null,
+  query: {},     
+  list: null,      
+  item: null,        
 };
 
-const handleViewProtected = function (event) {
-  event.preventDefault();    
-  api.protected(STORE.token)
-    .then(response => {
-      STORE.protected = response;
-      render.results(STORE);
-      STORE.view = 'protected';
-      render.page(STORE);
-    }).catch(err => {
-      if (err.status === 401) {
-        STORE.backTo = STORE.view;
-        STORE.view = 'signup';
+const handle =  {
+
+  viewRegister: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    store.view = 'signup';
+    renderPage(store);
+  },
+
+  register: function (event) {
+    event.preventDefault();
+    const username = $('.username').val();
+    const password = $('.password').val();
+  
+    api.register(username, password)
+      .then(response => {
+        const store = event.data;
+        store.view = 'list';
+        renderPage(store);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
+
+  viewLogin: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    store.view = 'login';
+    renderPage(store);
+  },
+
+  login: function (event) {
+    event.preventDefault();
+    const username = $('.username').val();
+    const password = $('.password').val();
+    const store = event.data;
+    api.login(username, password)
+      .then(response => {
+        STORE.authToken = response.authToken;
+        store.view = 'list';
+        renderResults(store);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
+  
+  viewProtected: function (event) {
+    event.preventDefault();    
+    api.protected(STORE.token)
+      .then(response => {
+        STORE.protected = response;
+        render.results(STORE);
+        STORE.view = 'protected';
         render.page(STORE);
-      }
-      console.error('ERROR:', err);
-    });
-}
+      }).catch(err => {
+        if (err.status === 401) {
+          STORE.backTo = STORE.view;
+          STORE.view = 'signup';
+          render.page(STORE);
+        }
+        console.error('ERROR:', err);
+      });
+  },
 
-const handleRegister = function (event) {
-  event.preventDefault();
-  const username = $('.username').val();
-  const password = $('.password').val();
+  viewList: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    if (!store.list) {
+      handleSearch(event);
+      return;
+    }
+    store.view = 'search';
+    renderPage(store);
+  },
 
-  api.register(username, password)
-    .then(response => {
-      const store = event.data;
-      store.view = 'list';
-      renderPage(store);
-    }).catch(err => {
-      console.error(err);
-    });
-};
+  search: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    const el = $(event.target);
+    const title = el.find('[name=title]').val();
+    var query;
+    if (title) {
+      query = {
+        title: el.find('[name=title]').val()
+      };
+    }
+    api.search(query)
+      .then(response => {
+        store.list = response;
+        renderResults(store);
+  
+        store.view = 'search';
+        renderPage(store);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
 
-const handleLogin = function (event) {
-  event.preventDefault();
-  const username = $('.username').val();
-  const password = $('.password').val();
-  const store = event.data;
-  api.login(username, password)
-    .then(response => {
-      GLOBAL_STORE.authToken = response.authToken;
-      store.view = 'list';
-      renderResults(store);
-    }).catch(err => {
-      console.error(err);
-    });
+  viewCreate: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    store.view = 'create';
+    renderPage(store);
+  },
+
+  create: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    const el = $(event.target);
+    const document = {
+      authToken: STORE.authToken,
+      title: el.find('[name=title]').val(),
+      content: el.find('[name=content]').val()
+    };
+    api.create(document)
+      .then(response => {
+        console.log('create response', response);
+        store.item = response;
+        store.list = null;
+        renderDetail(store);
+        store.view = 'detail';
+        renderPage(store);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
+
+  viewComment: function(event){
+    event.preventDefault();
+    const store = event.data;
+    store.view = 'comment-wizard';
+    renderPage(store);
+  },  
+
+  addComment: function(event){
+    event.preventDefault();
+    const store = event.data;
+  
+    const el = $(event.target);
+  
+    const document = {
+      id: store.item,
+      // author: el.find('.author').text(store.item.author.username),
+      content: el.find('[name=content]').val()
+    };
+    api.comment(document)
+      .then(response => {
+        store.item = response;
+        store.list = null;
+        renderDetail(store);
+        store.view = 'detail';
+        renderPage(store);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
+
+  viewEdit: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    renderEdit(store);
+  
+    store.view = 'edit';
+    renderPage(store);
+  },
+
+
+  
+  update: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    const el = $(event.target);
+  
+    const document = {
+      id: store.item.id,
+      title: el.find('[name=title]').val(),
+      content: el.find('[name=content]').val()
+    };
+    console.log(document);
+    api.update(document)
+      .then(response => {
+        console.log(response);
+        store.item = response;
+        store.list = null;
+        renderDetail(store);
+        store.view = 'detail';
+        renderPage(store);
+      }).catch(err => {
+        console.error(err.stack);
+      });
+  },
+
+  details: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    const el = $(event.target);
+  
+    const id = el.closest('li').attr('id');
+    api.details(id)
+      .then(response => {
+        store.item = response;
+        renderDetail(store);
+  
+        store.view = 'detail';
+        renderPage(store);
+  
+      }).catch(err => {
+        store.error = err;
+      });
+  },
+
+  remove: function (event) {
+    event.preventDefault();
+    const store = event.data;
+    const id = store.item.id;
+  
+    // api.remove(id, store.token)
+    api.remove(id)
+      .then(() => {
+        store.list = null; //invalidate cached list results
+        return handleSearch(event);
+      }).catch(err => {
+        console.error(err);
+      });
+  },
+
+
+
 };
 
 const renderPage = function (store) {
@@ -102,206 +290,27 @@ const renderDetail = function (store) {
   }).join(''));
 };
 
-const handleSearch = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  const el = $(event.target);
-  const title = el.find('[name=title]').val();
-  var query;
-  if (title) {
-    query = {
-      title: el.find('[name=title]').val()
-    };
-  }
-  api.search(query)
-    .then(response => {
-      store.list = response;
-      renderResults(store);
-
-      store.view = 'search';
-      renderPage(store);
-    }).catch(err => {
-      console.error(err);
-    });
-};
-
-const handleCreate = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  const el = $(event.target);
-  const document = {
-    authToken: GLOBAL_STORE.authToken,
-    author: GLOBAL_STORE.username,
-    title: el.find('[name=title]').val(),
-    content: el.find('[name=content]').val()
-  };
-  api.create(document)
-    .then(response => {
-      console.log('create response', response);
-      store.item = response;
-      store.list = null;
-      renderDetail(store);
-      store.view = 'detail';
-      renderPage(store);
-    }).catch(err => {
-      console.error(err);
-    });
-};
-
-const handleAddComment = function(event){
-  event.preventDefault();
-  const store = event.data;
-
-  const el = $(event.target);
-
-  const document = {
-    id: store.item,
-    // author: el.find('.author').text(store.item.author.username),
-    content: el.find('[name=content]').val()
-  };
-  api.comment(document)
-    .then(response => {
-      store.item = response;
-      store.list = null;
-      renderDetail(store);
-      store.view = 'detail';
-      renderPage(store);
-    }).catch(err => {
-      console.error(err);
-    });
-};
-
-//bug please fix
-const handleUpdate = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  const el = $(event.target);
-
-  const document = {
-    id: store.item.id,
-    title: el.find('[name=title]').val(),
-    content: el.find('[name=content]').val()
-  };
-  console.log(document);
-  api.update(document)
-    .then(response => {
-      console.log(response);
-      store.item = response;
-      store.list = null;
-      renderDetail(store);
-      store.view = 'detail';
-      renderPage(store);
-    }).catch(err => {
-      console.error(err.stack);
-    });
-};
-
-const handleDetails = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  const el = $(event.target);
-
-  const id = el.closest('li').attr('id');
-  api.details(id)
-    .then(response => {
-      store.item = response;
-      renderDetail(store);
-
-      store.view = 'detail';
-      renderPage(store);
-
-    }).catch(err => {
-      store.error = err;
-    });
-};
-
-const handleRemove = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  const id = store.item.id;
-
-  // api.remove(id, store.token)
-  api.remove(id)
-    .then(() => {
-      store.list = null; //invalidate cached list results
-      return handleSearch(event);
-    }).catch(err => {
-      console.error(err);
-    });
-};
-const handleViewRegister = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  store.view = 'signup';
-  renderPage(store);
-};
-const handleViewLogin = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  store.view = 'login';
-  renderPage(store);
-};
-const handleViewCreate = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  store.view = 'create';
-  renderPage(store);
-};
-const handleViewList = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  if (!store.list) {
-    handleSearch(event);
-    return;
-  }
-  store.view = 'search';
-  renderPage(store);
-};
-const handleViewEdit = function (event) {
-  event.preventDefault();
-  const store = event.data;
-  renderEdit(store);
-
-  store.view = 'edit';
-  renderPage(store);
-};
-
-const handViewComment = function(event){
-  event.preventDefault();
-  const store = event.data;
-  store.view = 'comment-wizard';
-  renderPage(store);
-};
-
 //on document ready bind events
 jQuery(function ($) {
 
-  const STORE = {
-    demo: false,        // display in demo mode true | false
-    view: 'list',       // current view: list | details | create | edit 
-    query: {},          // search query values
-    list: null,         // search result - array of objects (documents)
-    item: null,         // currently selected document
-  };
+  $('#create').on('submit', STORE, handle.create);
+  $('#search').on('submit', STORE, handle.search);
+  $('#edit').on('submit', STORE, handle.update);
 
-  $('#create').on('submit', STORE, handleCreate);
-  $('#search').on('submit', STORE, handleSearch);
-  $('#edit').on('submit', STORE, handleUpdate);
+  $('#signup').on('submit', STORE, handle.register);
+  $('#login').on('submit', STORE, handle.login);
 
-  $('#signup').on('submit', STORE, handleRegister);
-  $('#login').on('submit', STORE, handleLogin);
+  $('#comment-wizard').on('submit', STORE, handle.addComment);
 
-  $('#comment-wizard').on('submit', STORE, handleAddComment);
+  $('#result').on('click', '.detail', STORE, handle.details);
+  $('#detail').on('click', '.remove', STORE, handle.remove);
+  $('#detail').on('click', '.edit', STORE, handle.viewEdit);
+  $('#detail').on('click', '.leave-comment', STORE, handle.viewComment);
 
-  $('#result').on('click', '.detail', STORE, handleDetails);
-  $('#detail').on('click', '.remove', STORE, handleRemove);
-  $('#detail').on('click', '.edit', STORE, handleViewEdit);
-  $('#detail').on('click', '.leave-comment', STORE, handViewComment);
-
-  $(document).on('click', '.viewLogin', STORE, handleViewLogin);
-  $(document).on('click', '.viewSignup', STORE, handleViewRegister);
-  $(document).on('click', '.viewCreate', STORE, handleViewCreate);
-  $(document).on('click', '.viewList', STORE, handleViewList);
+  $(document).on('click', '.viewLogin', STORE, handle.viewLogin);
+  $(document).on('click', '.viewSignup', STORE, handle.viewRegister);
+  $(document).on('click', '.viewCreate', STORE, handle.viewCreate);
+  $(document).on('click', '.viewList', STORE, handle.viewList);
 
   // start app by triggering a search
   $('#search').trigger('submit');
