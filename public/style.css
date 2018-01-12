@@ -2,6 +2,10 @@ body {
   background-color: #F2EEE0;
 }
 
+.hidden {
+  display: none;
+}
+
 h2, h3 {
   font-family: 'Cinzel Decorative', cursive;
   text-align: center;

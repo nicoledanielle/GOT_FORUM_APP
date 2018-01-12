@@ -8,7 +8,7 @@ const STORE = {
   protected: null,
   query: {},     
   list: null,      
-  item: null,        
+  item: null,
 };
 
 const handle =  {
@@ -41,7 +41,7 @@ const handle =  {
     store.view = 'login';
     render.page(store);
   },
-
+  
   login: function (event) {
     event.preventDefault();
     const username = $('.username').val();
@@ -51,20 +51,19 @@ const handle =  {
       .then(response => {
         STORE.authToken = response.authToken;
         localStorage.setItem('authToken', store.authToken);
+        Cookies.set('got-forum', STORE.authToken);
         handle.viewProtected(event);
-        render.results(store);
       }).catch(err => {
         console.error(err);
       });
   },
   
-  viewProtected: function (event) {
-    event.preventDefault();    
+  viewProtected: function () {
     api.protected(STORE.token)
       .then(response => {
-        STORE.protect = response;
+        STORE.protected = response;
         render.results(STORE);
-        STORE.view = 'protect';
+        STORE.view = 'protected';
         render.page(STORE);
       }).catch(err => {
         if (err.status === 401) {
@@ -177,8 +176,6 @@ const handle =  {
     store.view = 'edit';
     render.page(store);
   },
-
-
   
   update: function (event) {
     event.preventDefault();
@@ -237,9 +234,6 @@ const handle =  {
         console.error(err);
       });
   },
-
-
-
 };
 
 const render = {
@@ -293,7 +287,19 @@ const render = {
 
 };
 
+const checkCookies = function () {
+  let cookie = Cookies.get( 'got-forum' );
+  if (cookie === undefined) {
+    handle.viewLogin();
+  }
+  else {
+    handle.viewProtected();
+  }
+};
+
 jQuery(function ($) {
+
+  $(document).on('load', checkCookies());
 
   $('#create').on('submit', STORE, handle.create);
   $('#search').on('submit', STORE, handle.search);
