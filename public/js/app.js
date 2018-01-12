@@ -52,7 +52,7 @@ const renderResults = function (store) {
     (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     return `<li class="list-results" id="${item.id}">
     <span class="time-stamp">${date.toString().split(' ').slice(0, 5).join(' ')}
-    </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author}</span><span class="comment-count">${item.comments.length} Comments
+    </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author.username}</span><span class="comment-count">${item.comments.length} Comments
     </span></li>`;
   });
   $('#result').empty().append('<ul>').find('ul').append(listItems);
@@ -154,7 +154,6 @@ const handleAddComment = function(event){
 
 const handleUpdate = function (event) {
   event.preventDefault();
-  console.log('event.data', event.data);
   const store = event.data;
   const el = $(event.target);
 
@@ -163,6 +162,7 @@ const handleUpdate = function (event) {
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
+  console.log(document);
   // api.update(document, store.token)
   api.update(document)
     .then(response => {

@@ -21,12 +21,6 @@ PostSchema.methods.apiRepr = function(){
   return {
     id: this._id,
     author: this.author,
-    authorUsername: User.findOne({_id: this._id}).
-      populate('username').
-      exec(function(err){
-        if (err) return console.error(err);
-        console.log('username is', this.authorUsername);
-      }),
     title: this.title,
     content: this.content,
     comments: this.comments,

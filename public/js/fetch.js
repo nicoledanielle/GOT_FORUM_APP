@@ -96,8 +96,6 @@ var api = {
   },  
   update: function (document) {
     const url = `${ITEMS_URL}/posts/${document.id}`;
-    
-    // console.log('dev tools', document);
 
     return fetch(url, {
       method: 'PUT',

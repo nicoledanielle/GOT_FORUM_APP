@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const UserSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   username: {
     type: String,
     required: true,
@@ -14,7 +15,8 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  // posts: [{}],
 });
 
 UserSchema.methods.apiRepr = function() {

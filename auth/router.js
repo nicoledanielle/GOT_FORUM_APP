@@ -5,6 +5,7 @@ const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const config = require('../config');
 const router = express.Router();
@@ -55,6 +56,7 @@ router.post('/register', (req, res) => {
     })
     .then(hash => {
       return User.create({
+        _id: new mongoose.Types.ObjectId(),
         username,
         password: hash,
       });
