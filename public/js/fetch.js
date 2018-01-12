@@ -46,19 +46,6 @@ var api = {
       .then(res => res.json());
   },
 
-  // userSearch: function(authToken){
-  //   const url = `${ITEMS_URL}/api/users/me`;
-
-  //   return fetch(url, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json'
-  //     },
-  //     body: JSON.stringify({authToken})
-  //   }).then(normalizeResponseErrors)
-  //     .then(res => res.json());
-  // },
-
   search: function (query) {
     const url = `${ITEMS_URL}/posts`;
 

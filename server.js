@@ -92,7 +92,6 @@ app.get('/posts', function(req, res){
 });
 
 app.get('/posts/:id', function(req, res){
-  //revisit this
   Post.findById(req.params.id)
     .populate('author')
     .then(post => {
@@ -101,7 +100,7 @@ app.get('/posts/:id', function(req, res){
       User.findById(post.author)
         .then(user => {
           const data = {
-            username: user.username,
+            author: user.username,
             title: postdata.title,
             content: postdata.content
           };
@@ -120,6 +119,7 @@ app.get('/posts/:id', function(req, res){
 app.post('/posts', function(req, res){
   const requiredFields = ['authToken', 'title', 'content'];
   const decodedUser = jwt.verify(req.body.authToken, process.env.JWT_SECRET);
+  console.log('decoded user', decodedUser);
   for (let i=0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -129,7 +129,7 @@ app.post('/posts', function(req, res){
     }
   }
 
-  User.findOne({username:decodedUser.user.username})
+  User.findOne({username: decodedUser.user.username})
     .then(resuser => {
       Post
         .create({
@@ -138,10 +138,11 @@ app.post('/posts', function(req, res){
           author: resuser._id,
         })
         .then(forumPost =>{
-          User.findById(forumPost)
-            .populate('author');
-          console.log(forumPost);
-          res.status(201).json(forumPost.apiRepr());
+          Post.findById(forumPost._id)
+            .populate('author')
+            .then(post => {
+              res.status(201).json(post);
+            });
         })
         .catch(err => {
           console.error(err);

@@ -2,7 +2,8 @@
 'use strict';
 
 const GLOBAL_STORE = {
-  authToken: undefined
+  authToken: undefined,
+  username: null
 };
 
 const handleRegister = function (event) {
@@ -28,7 +29,8 @@ const handleLogin = function (event) {
   api.login(username, password)
     .then(response => {
       GLOBAL_STORE.authToken = response.authToken;
-      console.log(response);
+      GLOBAL_STORE.username = response.username;
+      console.log('login response', response);
       // store.view = 'list';
       // renderPage(store);
     }).catch(err => {
@@ -71,7 +73,7 @@ const renderDetail = function (store) {
   let date = new Date(item.publishedAt); 
   (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
   
-  el.find('.author').text(item.author);
+  el.find('.author').text(item.author.username);
   el.find('.title').text(item.title);
   el.find('.content').text(item.content);
   el.find('.date').text(date.toString().split(' ').slice(0, 5).join(' '));
@@ -109,18 +111,19 @@ const handleSearch = function (event) {
 
 const handleCreate = function (event) {
   event.preventDefault();
-  console.log('logged in user', GLOBAL_STORE.authToken);
   const store = event.data;
   const el = $(event.target);
   const document = {
     authToken: GLOBAL_STORE.authToken,
+    author: GLOBAL_STORE.username,
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
   api.create(document)
     .then(response => {
+      console.log('create response', response);
       store.item = response;
-      store.list = null; //invalidate cached list results
+      store.list = null;
       renderDetail(store);
       store.view = 'detail';
       renderPage(store);
@@ -137,7 +140,7 @@ const handleAddComment = function(event){
 
   const document = {
     id: store.item,
-    author: el.find('[name=author]').val(),
+    // author: el.find('.author').text(store.item.author.username),
     content: el.find('[name=content]').val()
   };
   api.comment(document)
@@ -159,6 +162,7 @@ const handleUpdate = function (event) {
 
   const document = {
     id: store.item.id,
+    author: el.find('.author').text(store.item.author.username),
     title: el.find('[name=title]').val(),
     content: el.find('[name=content]').val()
   };
