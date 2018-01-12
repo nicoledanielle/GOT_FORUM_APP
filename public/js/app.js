@@ -5,7 +5,7 @@ const STORE = {
   authToken: undefined,
   demo: false,  
   view: 'list',
-  protect: null,
+  protected: null,
   query: {},     
   list: null,      
   item: null,        
@@ -17,7 +17,7 @@ const handle =  {
     event.preventDefault();
     const store = event.data;
     store.view = 'signup';
-    renderPage(store);
+    render.page(store);
   },
 
   register: function (event) {
@@ -29,7 +29,7 @@ const handle =  {
       .then(response => {
         const store = event.data;
         store.view = 'list';
-        renderPage(store);
+        render.page(store);
       }).catch(err => {
         console.error(err);
       });
@@ -39,7 +39,7 @@ const handle =  {
     event.preventDefault();
     const store = event.data;
     store.view = 'login';
-    renderPage(store);
+    render.page(store);
   },
 
   login: function (event) {
@@ -50,8 +50,9 @@ const handle =  {
     api.login(username, password)
       .then(response => {
         STORE.authToken = response.authToken;
-        store.view = 'list';
-        renderResults(store);
+        localStorage.setItem('authToken', store.authToken);
+        handle.viewProtected(event);
+        render.results(store);
       }).catch(err => {
         console.error(err);
       });
@@ -61,9 +62,9 @@ const handle =  {
     event.preventDefault();    
     api.protected(STORE.token)
       .then(response => {
-        STORE.protected = response;
+        STORE.protect = response;
         render.results(STORE);
-        STORE.view = 'protected';
+        STORE.view = 'protect';
         render.page(STORE);
       }).catch(err => {
         if (err.status === 401) {
@@ -79,11 +80,11 @@ const handle =  {
     event.preventDefault();
     const store = event.data;
     if (!store.list) {
-      handleSearch(event);
+      handle.search(event);
       return;
     }
     store.view = 'search';
-    renderPage(store);
+    render.page(store);
   },
 
   search: function (event) {
@@ -100,10 +101,10 @@ const handle =  {
     api.search(query)
       .then(response => {
         store.list = response;
-        renderResults(store);
+        render.results(store);
   
         store.view = 'search';
-        renderPage(store);
+        render.page(store);
       }).catch(err => {
         console.error(err);
       });
@@ -113,7 +114,7 @@ const handle =  {
     event.preventDefault();
     const store = event.data;
     store.view = 'create';
-    renderPage(store);
+    render.page(store);
   },
 
   create: function (event) {
@@ -130,9 +131,9 @@ const handle =  {
         console.log('create response', response);
         store.item = response;
         store.list = null;
-        renderDetail(store);
+        render.detail(store);
         store.view = 'detail';
-        renderPage(store);
+        render.page(store);
       }).catch(err => {
         console.error(err);
       });
@@ -142,7 +143,7 @@ const handle =  {
     event.preventDefault();
     const store = event.data;
     store.view = 'comment-wizard';
-    renderPage(store);
+    render.page(store);
   },  
 
   addComment: function(event){
@@ -160,9 +161,9 @@ const handle =  {
       .then(response => {
         store.item = response;
         store.list = null;
-        renderDetail(store);
+        render.detail(store);
         store.view = 'detail';
-        renderPage(store);
+        render.page(store);
       }).catch(err => {
         console.error(err);
       });
@@ -171,10 +172,10 @@ const handle =  {
   viewEdit: function (event) {
     event.preventDefault();
     const store = event.data;
-    renderEdit(store);
+    render.edit(store);
   
     store.view = 'edit';
-    renderPage(store);
+    render.page(store);
   },
 
 
@@ -195,9 +196,9 @@ const handle =  {
         console.log(response);
         store.item = response;
         store.list = null;
-        renderDetail(store);
+        render.detail(store);
         store.view = 'detail';
-        renderPage(store);
+        render.page(store);
       }).catch(err => {
         console.error(err.stack);
       });
@@ -212,10 +213,10 @@ const handle =  {
     api.details(id)
       .then(response => {
         store.item = response;
-        renderDetail(store);
+        render.detail(store);
   
         store.view = 'detail';
-        renderPage(store);
+        render.page(store);
   
       }).catch(err => {
         store.error = err;
@@ -241,56 +242,57 @@ const handle =  {
 
 };
 
-const renderPage = function (store) {
-  if (store.demo) {
-    $('.view').css('background-color', 'gray');
-    $('#' + store.view).css('background-color', 'white');
-  } else {
-    $('.view').hide();
-    $('#' + store.view).show();
-  }
-};
+const render = {
+  page: function (store) {
+    if (store.demo) {
+      $('.view').css('background-color', 'gray');
+      $('#' + store.view).css('background-color', 'white');
+    } else {
+      $('.view').hide();
+      $('#' + store.view).show();
+    }
+  },
 
-const renderResults = function (store) {
-  // console.log(store);
-  const listItems = store.list.map((item) => {
+  results: function (store) {
+    const listItems = store.list.map((item) => {
+      let date = new Date(item.publishedAt); 
+      (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+      return `<li class="list-results" id="${item.id}">
+      <span class="time-stamp">${date.toString().split(' ').slice(0, 5).join(' ')}
+      </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author.username}</span><span class="comment-count">${item.comments.length} Comments
+      </span></li>`;
+    });
+    $('#result').empty().append('<ul>').find('ul').append(listItems);
+  },
+
+  edit: function (store) {
+    const el = $('#edit');
+    const item = store.item;
+    el.find('[name=title]').val(item.title);
+    el.find('[name=content]').val(item.content);
+  },
+
+  detail: function (store) {
+    const el = $('#detail');
+    const item = store.item;
     let date = new Date(item.publishedAt); 
     (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-    return `<li class="list-results" id="${item.id}">
-    <span class="time-stamp">${date.toString().split(' ').slice(0, 5).join(' ')}
-    </span><a href="${item.url}" class="detail">${item.title}</a><span class="author-name">Posted By: ${item.author.username}</span><span class="comment-count">${item.comments.length} Comments
-    </span></li>`;
-  });
-  $('#result').empty().append('<ul>').find('ul').append(listItems);
-};
-
-const renderEdit = function (store) {
-  const el = $('#edit');
-  const item = store.item;
-  el.find('[name=title]').val(item.title);
-  el.find('[name=content]').val(item.content);
-}; 
-
-const renderDetail = function (store) {
-  const el = $('#detail');
-  const item = store.item;
-  let date = new Date(item.publishedAt); 
-  (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-  
-  el.find('.author').text(item.author.username);
-  el.find('.title').text(item.title);
-  el.find('.content').text(item.content);
-  el.find('.date').text(date.toString().split(' ').slice(0, 5).join(' '));
-  el.find('.comments').html(item.comments.map(function(val){
-    let dateComments = new Date(val.publishedAt); 
-    (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
     
-    return `<li>${val.author} said: "${val.content}" on ${dateComments.toString().split(' ').slice(0, 5).join(' ')}
-    </li>`;
-  }).join(''));
+    el.find('.author').text(item.author.username);
+    el.find('.title').text(item.title);
+    el.find('.content').text(item.content);
+    el.find('.date').text(date.toString().split(' ').slice(0, 5).join(' '));
+    el.find('.comments').html(item.comments.map(function(val){
+      let dateComments = new Date(val.publishedAt); 
+      (dateComments.getMonth() + 1) + '/' + dateComments.getDate() + '/' + dateComments.getFullYear();
+      
+      return `<li>${val.author} said: "${val.content}" on ${dateComments.toString().split(' ').slice(0, 5).join(' ')}
+      </li>`;
+    }).join(''));
+  },
+
 };
 
-//on document ready bind events
 jQuery(function ($) {
 
   $('#create').on('submit', STORE, handle.create);
@@ -314,6 +316,6 @@ jQuery(function ($) {
 
   // start app by triggering a search
   $('#search').trigger('submit');
-
+  $('.viewProtected').trigger('click');
 });
 

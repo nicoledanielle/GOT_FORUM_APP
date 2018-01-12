@@ -72,9 +72,9 @@ router.post('/register', (req, res) => {
     });
 });
 
-router.get('/me', function(req, res) {
-  jwt.verify(req.body.authToken, process.env.JWT_SECRET, function(err, decodedUser) {
-    if (err) return console.log('No User Identified');
-    res.json({ user: decodedUser });
-  });
-});
+// router.get('/me', function(req, res) {
+//   jwt.verify(req.body.authToken, process.env.JWT_SECRET, function(err, decodedUser) {
+//     if (err) return console.log('No User Identified');
+//     res.json({ user: decodedUser });
+//   });
+// });

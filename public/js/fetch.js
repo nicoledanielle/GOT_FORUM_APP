@@ -46,6 +46,32 @@ var api = {
       .then(res => res.json());
   },
 
+  refresh: function (token) {
+    const url = `${ITEMS_URL}/api/auth/refresh/`;
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    }).then(normalizeResponseErrors)
+      .then(res => res.json());
+  },
+
+  protected: function (token) {
+    const url = `${ITEMS_URL}/api/protected`;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+    }).then(normalizeResponseErrors)
+      .then(res => res.json());
+  },
+  
   search: function (query) {
     const url = `${ITEMS_URL}/posts`;
 
