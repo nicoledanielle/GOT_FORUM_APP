@@ -71,7 +71,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.json());
   },
-  
+
   search: function (query) {
     const url = `${ITEMS_URL}/posts`;
 
@@ -83,6 +83,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.json());
   },
+  
   details: function (id) {
     const url = `${ITEMS_URL}/posts/${id}`;
 

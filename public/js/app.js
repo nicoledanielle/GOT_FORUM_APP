@@ -7,8 +7,8 @@ const STORE = {
   view: 'list',
   protected: null,
   query: {},     
-  list: null,      
-  item: null,
+  // list: null,      
+  // item: null,
 };
 
 const handle =  {
