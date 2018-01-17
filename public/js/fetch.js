@@ -83,7 +83,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.json());
   },
-  
+
   details: function (id) {
     const url = `${ITEMS_URL}/posts/${id}`;
 
@@ -95,6 +95,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.json());
   },
+
   create: function (document) {
     const url = `${ITEMS_URL}/posts`;
     console.log(document);
@@ -108,6 +109,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.json());
   },  
+
   update: function (document) {
     const url = `${ITEMS_URL}/posts/${document.id}`;
 
@@ -122,6 +124,7 @@ var api = {
       .then(normalizeResponseErrors)
       .then(res => res.json());
   },
+
   remove: function (id) {
     const url = `${ITEMS_URL}/posts/${id}`;
 
@@ -133,6 +136,7 @@ var api = {
     }).then(normalizeResponseErrors)
       .then(res => res.text());
   },
+  
   comment: function(document) {
     console.log('document.id', document.id);
     const url = `${ITEMS_URL}/posts/${document.id.id}/${COMMENTS_ROUTE}`;
@@ -148,18 +152,3 @@ var api = {
       .then(res => res.json());
   }
 };
-
-// userSearch: function(authToken){
-  //   const url = `${ITEMS_URL}/api/users/me`;
-  
-  //   return fetch(url, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json'
-  //     },
-  //     body: JSON.stringify({authToken})
-  //   }).then(normalizeResponseErrors)
-  //     .then(res => res.json());
-  // },
-
-

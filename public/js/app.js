@@ -52,6 +52,7 @@ const handle =  {
         STORE.authToken = response.authToken;
         localStorage.setItem('authToken', store.authToken);
         Cookies.set('got-forum', STORE.authToken);
+        console.log('cookies:', Cookies);
         handle.viewProtected(event);
       }).catch(err => {
         console.error(err);
@@ -301,24 +302,24 @@ jQuery(function ($) {
 
   $(document).on('load', checkCookies());
 
-  $('#create').on('submit', STORE, handle.create);
-  $('#search').on('submit', STORE, handle.search);
-  $('#edit').on('submit', STORE, handle.update);
+  // $('#create').on('submit', STORE, handle.create);
+  // $('#search').on('submit', STORE, handle.search);
+  // $('#edit').on('submit', STORE, handle.update);
 
-  $('#signup').on('submit', STORE, handle.register);
-  $('#login').on('submit', STORE, handle.login);
+  // $('#signup').on('submit', STORE, handle.register);
+  // $('#login').on('submit', STORE, handle.login);
 
-  $('#comment-wizard').on('submit', STORE, handle.addComment);
+  // $('#comment-wizard').on('submit', STORE, handle.addComment);
 
-  $('#result').on('click', '.detail', STORE, handle.details);
-  $('#detail').on('click', '.remove', STORE, handle.remove);
-  $('#detail').on('click', '.edit', STORE, handle.viewEdit);
-  $('#detail').on('click', '.leave-comment', STORE, handle.viewComment);
+  // $('#result').on('click', '.detail', STORE, handle.details);
+  // $('#detail').on('click', '.remove', STORE, handle.remove);
+  // $('#detail').on('click', '.edit', STORE, handle.viewEdit);
+  // $('#detail').on('click', '.leave-comment', STORE, handle.viewComment);
 
-  $(document).on('click', '.viewLogin', STORE, handle.viewLogin);
-  $(document).on('click', '.viewSignup', STORE, handle.viewRegister);
-  $(document).on('click', '.viewCreate', STORE, handle.viewCreate);
-  $(document).on('click', '.viewList', STORE, handle.viewList);
+  // $(document).on('click', '.viewLogin', STORE, handle.viewLogin);
+  // $(document).on('click', '.viewSignup', STORE, handle.viewRegister);
+  // $(document).on('click', '.viewCreate', STORE, handle.viewCreate);
+  // $(document).on('click', '.viewList', STORE, handle.viewList);
 
   // start app by triggering a search
   $('#search').trigger('submit');
