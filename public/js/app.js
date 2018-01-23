@@ -7,8 +7,8 @@ const STORE = {
   view: 'list',
   protected: null,
   query: {},     
-  // list: null,      
-  // item: null,
+  list: null,      
+  item: null,
 };
 
 const handle =  {
@@ -51,8 +51,8 @@ const handle =  {
       .then(response => {
         STORE.authToken = response.authToken;
         localStorage.setItem('authToken', store.authToken);
-        Cookies.set('got-forum', STORE.authToken);
-        console.log('cookies:', Cookies);
+        // Cookies.set('got-forum', STORE.authToken);
+        // console.log('cookies:', Cookies);
         handle.viewProtected(event);
       }).catch(err => {
         console.error(err);
@@ -235,6 +235,17 @@ const handle =  {
         console.error(err);
       });
   },
+
+  // checkCookies: function (event) {
+  //   let cookie = Cookies.get( 'got-forum' );
+  //   if (cookie === undefined) {
+  //     handle.viewLogin(event);
+  //   }
+  //   else {
+  //     handle.viewProtected(event);
+  //   }
+  // },
+
 };
 
 const render = {
@@ -288,38 +299,38 @@ const render = {
 
 };
 
-const checkCookies = function () {
-  let cookie = Cookies.get( 'got-forum' );
-  if (cookie === undefined) {
-    handle.viewLogin();
-  }
-  else {
-    handle.viewProtected();
-  }
-};
+// const checkCookies = function () {
+//   let cookie = Cookies.get( 'got-forum' );
+//   if (cookie === undefined) {
+//     handle.viewLogin();
+//   }
+//   else {
+//     handle.viewProtected();
+//   }
+// };
 
 jQuery(function ($) {
 
-  $(document).on('load', checkCookies());
+  // $(document).on('load', handle.checkCookies);
 
-  // $('#create').on('submit', STORE, handle.create);
-  // $('#search').on('submit', STORE, handle.search);
-  // $('#edit').on('submit', STORE, handle.update);
+  $('#create').on('submit', STORE, handle.create);
+  $('#search').on('submit', STORE, handle.search);
+  $('#edit').on('submit', STORE, handle.update);
 
-  // $('#signup').on('submit', STORE, handle.register);
-  // $('#login').on('submit', STORE, handle.login);
+  $('#signup').on('submit', STORE, handle.register);
+  $('#login').on('submit', STORE, handle.login);
 
-  // $('#comment-wizard').on('submit', STORE, handle.addComment);
+  $('#comment-wizard').on('submit', STORE, handle.addComment);
 
-  // $('#result').on('click', '.detail', STORE, handle.details);
-  // $('#detail').on('click', '.remove', STORE, handle.remove);
-  // $('#detail').on('click', '.edit', STORE, handle.viewEdit);
-  // $('#detail').on('click', '.leave-comment', STORE, handle.viewComment);
+  $('#result').on('click', '.detail', STORE, handle.details);
+  $('#detail').on('click', '.remove', STORE, handle.remove);
+  $('#detail').on('click', '.edit', STORE, handle.viewEdit);
+  $('#detail').on('click', '.leave-comment', STORE, handle.viewComment);
 
-  // $(document).on('click', '.viewLogin', STORE, handle.viewLogin);
-  // $(document).on('click', '.viewSignup', STORE, handle.viewRegister);
-  // $(document).on('click', '.viewCreate', STORE, handle.viewCreate);
-  // $(document).on('click', '.viewList', STORE, handle.viewList);
+  $(document).on('click', '.viewLogin', STORE, handle.viewLogin);
+  $(document).on('click', '.viewSignup', STORE, handle.viewRegister);
+  $(document).on('click', '.viewCreate', STORE, handle.viewCreate);
+  $(document).on('click', '.viewList', STORE, handle.viewList);
 
   // start app by triggering a search
   $('#search').trigger('submit');

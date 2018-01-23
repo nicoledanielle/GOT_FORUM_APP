@@ -13,7 +13,7 @@ const router = express.Router();
 const {User} = require('../users');
 
 const createAuthToken = function(user) {
-  return jwt.sign({user}, process.env.JWT_SECRET, {
+  return jwt.sign({user}, process.env.JWT_SECRET || 'fffff', {
     subject: user.username,
     expiresIn: config.JWT_EXPIRY,
     algorithm: 'HS256'

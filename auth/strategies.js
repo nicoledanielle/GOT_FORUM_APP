@@ -39,7 +39,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
 
 const jwtStrategy = new JwtStrategy(
   {
-    secretOrKey: process.env.JWT_SECRET,
+    secretOrKey: process.env.JWT_SECRET || 'gggg',
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
     algorithms: ['HS256']
   },
