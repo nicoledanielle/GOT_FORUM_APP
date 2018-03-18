@@ -116,7 +116,7 @@ app.get('/posts/:id', function(req, res){
   // res.json(data[0]);
 });
 
-app.post('/posts', function(req, res){
+app.post('/posts', jwtAuth, function(req, res){
   const requiredFields = ['authToken', 'title', 'content'];
   const decodedUser = jwt.verify(req.body.authToken, process.env.JWT_SECRET);
   console.log('decoded user', decodedUser);
@@ -135,7 +135,7 @@ app.post('/posts', function(req, res){
         .create({
           title: req.body.title,
           content: req.body.content,
-          author: resuser._id,
+          author: resuser._id
         })
         .then(forumPost =>{
           Post.findById(forumPost._id)

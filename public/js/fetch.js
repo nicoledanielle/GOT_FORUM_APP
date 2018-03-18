@@ -96,12 +96,13 @@ var api = {
       .then(res => res.json());
   },
 
-  create: function (document) {
+  create: function (document, getState) {
+    const authToken = getState().auth.authToken;
     const url = `${ITEMS_URL}/posts`;
-    console.log(document);
     return fetch(url, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },

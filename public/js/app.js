@@ -43,6 +43,7 @@ const handle =  {
   },
   
   login: function (event) {
+    console.log('logging in');
     event.preventDefault();
     const username = $('.username').val();
     const password = $('.password').val();
@@ -51,8 +52,6 @@ const handle =  {
       .then(response => {
         STORE.authToken = response.authToken;
         localStorage.setItem('authToken', store.authToken);
-        // Cookies.set('got-forum', STORE.authToken);
-        // console.log('cookies:', Cookies);
         handle.viewProtected(event);
       }).catch(err => {
         console.error(err);
@@ -128,7 +127,6 @@ const handle =  {
     };
     api.create(document)
       .then(response => {
-        console.log('create response', response);
         store.item = response;
         store.list = null;
         render.detail(store);
@@ -154,7 +152,6 @@ const handle =  {
   
     const document = {
       id: store.item,
-      // author: el.find('.author').text(store.item.author.username),
       content: el.find('[name=content]').val()
     };
     api.comment(document)
@@ -236,16 +233,6 @@ const handle =  {
       });
   },
 
-  // checkCookies: function (event) {
-  //   let cookie = Cookies.get( 'got-forum' );
-  //   if (cookie === undefined) {
-  //     handle.viewLogin(event);
-  //   }
-  //   else {
-  //     handle.viewProtected(event);
-  //   }
-  // },
-
 };
 
 const render = {
@@ -261,6 +248,7 @@ const render = {
 
   results: function (store) {
     const listItems = store.list.map((item) => {
+      console.log(item);
       let date = new Date(item.publishedAt); 
       (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
       return `<li class="list-results" id="${item.id}">
@@ -299,19 +287,8 @@ const render = {
 
 };
 
-// const checkCookies = function () {
-//   let cookie = Cookies.get( 'got-forum' );
-//   if (cookie === undefined) {
-//     handle.viewLogin();
-//   }
-//   else {
-//     handle.viewProtected();
-//   }
-// };
 
 jQuery(function ($) {
-
-  // $(document).on('load', handle.checkCookies);
 
   $('#create').on('submit', STORE, handle.create);
   $('#search').on('submit', STORE, handle.search);
